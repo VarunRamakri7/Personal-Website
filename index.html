@@ -1,211 +1,248 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Varun Ramakrishnan</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,700italic' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" type="text/css" href="css/styles.css" />
-		<script type="text/javascript" src="scripts/three.min.js"></script>
-		<script type="text/javascript" src="scripts/game.js"/></script>
-	</head>
-	<style>
-	body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
-	body, html {
-    background-color: rgb(36, 36, 36);
-		height: 100%;
-		color: rgb(226, 226, 226);
-		line-height: 1.8;
-	}
 
-	/* Create a Parallax Effect */
-	.bgimg-1, .bgimg-2, .bgimg-3 
-	{
-		background-attachment: fixed;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: cover;
-	}
+<head>
+  <title>Varun Ramakrishnan</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,700italic' rel='stylesheet'
+    type='text/css'>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+  <script type="text/javascript" src="scripts/three.min.js"></script>
+  <script type="text/javascript" src="scripts/game.js"></script>
+</head>
 
-	/* First image (Logo. Full height) */
-	.bgimg-1 {
-		background-image: url("images/Parallax1.jpg");
-		min-height: 100%;
-	}
-
-	/* Second image (Portfolio) */
-	.bgimg-2 {
-		background-image: url("images/Parallax2.jpg");
-		min-height: 400px;
-	}
-
-	/* Third image (Contact) */
-	.bgimg-3 {
-		background-image: url("images/Parallax3.jpg");
-		min-height: 400px;
-	}
-
-	.w3-padding-700 {
-		padding-bottom: 600px;
-	}
-
-	.w3-wide {letter-spacing: 10px;}
-	.w3-hover-opacity {cursor: pointer;}
-
-	/* Turn off parallax scrolling for tablets and phones */
-	@media only screen and (max-device-width: 1024px) {
-		.bgimg-1, .bgimg-2, .bgimg-3 {
-			background-attachment: scroll;
-		}
-	}
-	</style>
 <body>
 
-<!-- Navbar (sit on top) -->
-<div class="w3-top">
-  <div class="w3-bar" id="myNavbar">
-    <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
-      <i class="fa fa-bars"></i>
-    </a>
-    <a href="#home" class="w3-bar-item w3-button"><i class="fa fa-home"></i> HOME</a>
-    <a href="#about" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> ABOUT</a>
-    <a href="#portfolio" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PORTFOLIO</a>
-    <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
-  </div>
-
-  <!-- Navbar on small screens -->
-  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
-    <a href="#about" class="w3-bar-item w3-button" onclick="toggleFunction()">ABOUT</a>
-    <a href="#portfolio" class="w3-bar-item w3-button" onclick="toggleFunction()">PORTFOLIO</a>
-    <a href="#contact" class="w3-bar-item w3-button" onclick="toggleFunction()">CONTACT</a>
-  </div>
-</div>
-
-<!-- First Parallax Image with Logo Text -->
-<div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
-  <div class="w3-display-middle" style="white-space:nowrap;">
-    <span class="w3-center w3-padding-large w3-red w3-xlarge w3-wide w3-animate-opacity">WELCOME TO MY LITTLE CORNER OF THE INTERNET</span>
-  </div>
-</div>
-
-<!-- Container (About Section) -->
-<div class="w3-content w3-container w3-padding-64" id="about">
-  <h3 class="w3-center">ABOUT ME</h3>
-
-  <div class="w3-row">
-    <div class="w3-col m6 w3-center w3-padding-large">
-      <p><b><i class="fa fa-user w3-margin-right"></i>Varun Ramakrishnan</b></p><br>
-      <img src="images/Holi.jpeg" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me" width="500" height="333">
+  <!-- Navbar (sit on top) -->
+  <div class="w3-top">
+    <div class="w3-bar" id="myNavbar">
+      <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);"
+        onclick="toggleFunction()" title="Toggle Navigation Menu">
+        <i class="fa fa-bars"></i>
+      </a>
+      <a href="#home" class="w3-bar-item w3-button"><i class="fa fa-home"></i> HOME</a>
+      <a href="#about" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> ABOUT</a>
+      <a href="#portfolio" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PORTFOLIO</a>
+      <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
     </div>
 
-    <!-- About Section -->
-    <div class="w3-col m6 w3-hide-small w3-padding-large">
-      <p>
-        <br>Welcome to my website.</br> 
-        <br>I am Varun Ramakrishnan (it's nice to meet you). I am currently a Graduate student at Purdue University majoring in Computer Graphics Programming with almost 5 years of professional and personal experience with Game Development, and Graphics Programming.</br>
-        <br>My strongest programming language is C#, and C++ since I use them the most but I also have experience with Java. My background in CS has given me excelltent debugging and problem-solving skills, and creativity fuels my passion for Games and Graphics.</br>
-        <br>Graphics Programming is my main interest (You can create entire worlds!?). I use Unity with C#, and OpenGL with C++ for all my personal projects.</br>
-        <br>The game engines that I am well versed in are Unreal, and Unity although I have used others.</br>
-        <br>Now that you know the "professional side", let's get into my fun side. When I'm not busy with the above, I love to watch (and <a href="https://www.instagram.com/pada_cassette/">write about</a>) films, take <a href="https://www.instagram.com/vatacheyalalar_vandumurugan/">photos</a>, read, play cricket, and game (RPGs are my go-to).</br>
-        </br>
-      </p>
-     </div>
+    <!-- Navbar on small screens -->
+    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
+      <a href="#about" class="w3-bar-item w3-button" onclick="toggleFunction()">ABOUT</a>
+      <a href="#portfolio" class="w3-bar-item w3-button" onclick="toggleFunction()">PORTFOLIO</a>
+      <a href="#contact" class="w3-bar-item w3-button" onclick="toggleFunction()">CONTACT</a>
+    </div>
   </div>
-  <p class="w3-wide"><i class="fa fa-desktop"></i>Game Engines</p>
-  <div class="w3-light-grey">
-    <div class="w3-container w3-padding-small w3-red w3-center"  style="width:95%">95%</div>
-  </div>
-  <p class="w3-wide"><i class="fa fa-laptop"></i>C# and C++</p>
-  <div class="w3-light-grey">
-    <div class="w3-container w3-padding-small w3-red w3-center" style="width:90%">90%</div>
-  </div>
-  <p class="w3-wide"><i class="fa fa-photo"></i>Data Structures and Algorithms</p>
-  <div class="w3-light-grey">
-    <div class="w3-container w3-padding-small w3-red w3-center" style="width:80%">80%</div>
-  </div>
-</div>
 
-<!-- Second Parallax Image with Portfolio Text -->
-<div class="bgimg-2 w3-display-container w3-opacity-min">
-  <div class="w3-display-middle">
-    <span class="w3-xxlarge w3-text-white w3-wide">PORTFOLIO</span>
-  </div>
-</div>
+  <style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: "Lato", sans-serif;
+    }
 
-<!-- Container for Portfolio Section -->
-<div class="w3-content w3-container w3-padding-700" id="portfolio">
-  <h3 class="w3-center">MY WORK</h3>
-  <div class="w3-row-padding">
-  <h3 class="w3-quarter"><a href="inner/Resume.html" class="w3-button w3-red"><i class="fa fa-address-card w3-margin-right"></i>Resume</a></h3>
-  <h3 class="w3-quarter"><a href="https://github.com/VarunRamakri7" class="w3-button w3-red"><i class="fa fa-address-card w3-margin-right"></i>GitHub</a></h3>
-  <h3 class="w3-quarter"><a href="https://store.steampowered.com/app/1269250/War_Smith/" class="w3-button w3-red"><i class="fa fa-address-card w3-margin-right"></i>War Smith</a></h3> 
-  <h3 class="w3-quarter"><a href="https://varunramakri7.github.io/BottomGun/" class="w3-button w3-red"><i class="fa fa-address-card w3-margin-right"></i>BottomGun</a></h3>
-  </div>
-  <h4 class="w3-center"> Here's the demo of BottomGun! (Just move your mouse)</h3>
-  <div class="w3-col m3 w3-auto">
-    <div class="world w3-auto" id="world" style="width: 1000px; height: 500px;"></div>
-  </div>
-</div>
+    body,
+    html {
+      background-color: rgb(36, 36, 36);
+      height: 100%;
+      color: rgb(226, 226, 226);
+      line-height: 1.8;
+    }
 
-<!-- Third Parallax Image with Portfolio Text -->
-<div class="bgimg-3 w3-display-container w3-opacity-min">
-  <div class="w3-display-middle">
-     <span class="w3-xxlarge w3-text-black w3-wide">CONTACT</span>
+    /* Create a Parallax Effect */
+    .bgimg-1,
+    .bgimg-2,
+    .bgimg-3 {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    /* First image (Logo. Full height) */
+    .bgimg-1 {
+      background-image: url("images/Parallax1.jpg");
+      min-height: 100%;
+    }
+
+    /* Second image (Portfolio) */
+    .bgimg-2 {
+      background-image: url("images/Parallax2.jpg");
+      min-height: 400px;
+    }
+
+    /* Third image (Contact) */
+    .bgimg-3 {
+      background-image: url("images/Parallax3.jpg");
+      min-height: 400px;
+    }
+
+    .w3-padding-700 {
+      padding-bottom: 600px;
+    }
+
+    .w3-wide {
+      letter-spacing: 10px;
+    }
+
+    .w3-hover-opacity {
+      cursor: pointer;
+    }
+
+    /* Turn off parallax scrolling for tablets and phones */
+    @media only screen and (max-device-width: 1024px) {
+
+      .bgimg-1,
+      .bgimg-2,
+      .bgimg-3 {
+        background-attachment: scroll;
+      }
+    }
+  </style>
+
+  <!-- First Parallax Image with Logo Text -->
+  <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
+    <div class="w3-display-middle" style="white-space:nowrap;">
+      <span class="w3-center w3-padding-large w3-red w3-xlarge w3-wide w3-animate-opacity">WELCOME TO MY LITTLE CORNER
+        OF THE INTERNET</span>
+    </div>
   </div>
-</div>
 
-<!-- Container (Contact Section) -->
-<div class="w3-content w3-container w3-padding-50" id="contact">
-  <h4 class="w3-center">Have feedback? Send me a message!</h3>
-  <h3 class="w3-center"><a href="https://goo.gl/forms/CRzkxjBayvN9ViDI3" class="w3-button w3-red"><i class="fa fa-paper-plane w3-margin-right"></i>SEND MESSAGE</a></h3>
+  <!-- Container (About Section) -->
+  <div class="w3-content w3-container w3-padding-64" id="about">
+    <h3 class="w3-center">ABOUT ME</h3>
 
-    <div class="w3-col m8 w3-panel" >
-      <div class="w3-large w3-margin-bottom">
-        <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> West Lafayette, IN <br>
-        <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: oceans.varun@gmail.com <br>
+    <div class="w3-row">
+      <div class="w3-col m6 w3-center w3-padding-large">
+        <p><b><i class="fa fa-user w3-margin-right"></i>Varun Ramakrishnan</b></p><br>
+        <img src="images/Holi.jpeg" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me"
+          width="500" height="333">
+      </div>
+
+      <!-- About Section -->
+      <div class="w3-col m6 w3-hide-small w3-padding-large">
+        <p>
+          <br>Welcome to my website.</br>
+          <br>I am Varun Ramakrishnan (it's nice to meet you). I am currently a Graduate student at Purdue University
+          majoring in Computer Graphics Programming with almost 5 years of professional and personal experience with
+          Game Development, and Graphics Programming.</br>
+          <br>My strongest programming language is C#, and C++ since I use them the most but I also have experience with
+          Java. My background in CS has given me excelltent debugging and problem-solving skills, and creativity fuels
+          my passion for Games and Graphics.</br>
+          <br>Graphics Programming is my main interest (You can create entire worlds!?). I use Unity with C#, and OpenGL
+          with C++ for all my personal projects.</br>
+          <br>The game engines that I am well versed in are Unreal, and Unity although I have used others.</br>
+          <br>Now that you know the "professional side", let's get into my fun side. When I'm not busy with the above, I
+          love to watch (and <a href="https://www.instagram.com/pada_cassette/">write about</a>) films, take <a
+            href="https://www.instagram.com/vatacheyalalar_vandumurugan/">photos</a>, read, play cricket, and game (RPGs
+          are my go-to).</br>
+          </br>
+        </p>
       </div>
     </div>
+    <p class="w3-wide"><i class="fa fa-desktop"></i>Game Engines</p>
+    <div class="w3-light-grey">
+      <div class="w3-container w3-padding-small w3-red w3-center" style="width:95%">95%</div>
+    </div>
+    <p class="w3-wide"><i class="fa fa-laptop"></i>C# and C++</p>
+    <div class="w3-light-grey">
+      <div class="w3-container w3-padding-small w3-red w3-center" style="width:90%">90%</div>
+    </div>
+    <p class="w3-wide"><i class="fa fa-photo"></i>Data Structures and Algorithms</p>
+    <div class="w3-light-grey">
+      <div class="w3-container w3-padding-small w3-red w3-center" style="width:80%">80%</div>
+    </div>
   </div>
-</div>
 
-
-<!-- Footer -->
-<footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
-  <a href="#home" class="w3-button w3-red"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
-  <p>Want to help make this page larger?</p>
-  <p>You could get in touch with me and offer me a job!</p>
+  <!-- Second Parallax Image with Portfolio Text -->
+  <div class="bgimg-2 w3-display-container w3-opacity-min">
+    <div class="w3-display-middle">
+      <span class="w3-xxlarge w3-text-white w3-wide">PORTFOLIO</span>
+    </div>
   </div>
-</footer>
- 
-<script>
-// Modal Image Gallery
-function onClick(element) 
-{
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
-}
 
-// Change style of navbar on scroll-
-window.onscroll = function() {myFunction()};
-function myFunction() 
-{
-    var navbar = document.getElementById("myNavbar");
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100)  navbar.className = "w3-bar" + " w3-card-2" + " w3-animate-top" + " w3-white";
-         else navbar.className = navbar.className.replace(" w3-card-2 w3-animate-top w3-white", "");
-}
+  <!-- Container for Portfolio Section -->
+  <div class="w3-content w3-container w3-padding-700" id="portfolio">
+    <h3 class="w3-center">MY WORK</h3>
+    <div class="w3-row-padding">
+      <h3 class="w3-quarter"><a href="inner/Resume.html" class="w3-button w3-red"><i
+            class="fa fa-address-card w3-margin-right"></i>Resume</a></h3>
+      <h3 class="w3-quarter"><a href="https://github.com/VarunRamakri7" class="w3-button w3-red"><i
+            class="fa fa-address-card w3-margin-right"></i>GitHub</a></h3>
+      <h3 class="w3-quarter"><a href="https://store.steampowered.com/app/1269250/War_Smith/" class="w3-button w3-red"><i
+            class="fa fa-address-card w3-margin-right"></i>War Smith</a></h3>
+      <h3 class="w3-quarter"><a href="https://varunramakri7.github.io/BottomGun/" class="w3-button w3-red"><i
+            class="fa fa-address-card w3-margin-right"></i>BottomGun</a></h3>
+    </div>
+    <h4 class="w3-center"> Here's the demo of BottomGun! (Just move your mouse)</h3>
+      <div class="w3-col m3 w3-auto">
+        <div class="world w3-auto" id="world" style="width: 1000px; height: 500px;"></div>
+      </div>
+  </div>
 
-//Used to toggle the menu on small screens when clicking on the menu button
-function toggleFunction()
- {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1)  x.className += " w3-show";
-        else  x.className = x.className.replace(" w3-show", "");
-}
-</script>
+  <!-- Third Parallax Image with Portfolio Text -->
+  <div class="bgimg-3 w3-display-container w3-opacity-min">
+    <div class="w3-display-middle">
+      <span class="w3-xxlarge w3-text-black w3-wide">CONTACT</span>
+    </div>
+  </div>
+
+  <!-- Container (Contact Section) -->
+  <div class="w3-content w3-container w3-padding-50" id="contact">
+    <h4 class="w3-center">Have feedback? Send me a message!</h3>
+      <h3 class="w3-center"><a href="https://goo.gl/forms/CRzkxjBayvN9ViDI3" class="w3-button w3-red"><i
+            class="fa fa-paper-plane w3-margin-right"></i>SEND MESSAGE</a></h3>
+
+      <div class="w3-col m8 w3-panel">
+        <div class="w3-large w3-margin-bottom">
+          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> West Lafayette, IN <br>
+          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email:
+          oceans.varun@gmail.com <br>
+        </div>
+      </div>
+  </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
+    <a href="#home" class="w3-button w3-red"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+    <p>Want to help make this page larger?</p>
+    <p>You could get in touch with me and offer me a job!</p>
+    </div>
+  </footer>
+
+  <script>
+    // Modal Image Gallery
+    function onClick(element) {
+      document.getElementById("img01").src = element.src;
+      document.getElementById("modal01").style.display = "block";
+      var captionText = document.getElementById("caption");
+      captionText.innerHTML = element.alt;
+    }
+
+    // Change style of navbar on scroll-
+    window.onscroll = function () { myFunction() };
+    function myFunction() {
+      var navbar = document.getElementById("myNavbar");
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) navbar.className = "w3-bar" + " w3-card-2" + " w3-animate-top" + " w3-white";
+      else navbar.className = navbar.className.replace(" w3-card-2 w3-animate-top w3-white", "");
+    }
+
+    //Used to toggle the menu on small screens when clicking on the menu button
+    function toggleFunction() {
+      var x = document.getElementById("navDemo");
+      if (x.className.indexOf("w3-show") == -1) x.className += " w3-show";
+      else x.className = x.className.replace(" w3-show", "");
+    }
+  </script>
 </body>
+
 </html>
