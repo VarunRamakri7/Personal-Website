@@ -1,248 +1,172 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <title>Varun Ramakrishnan</title>
-  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,700italic' rel='stylesheet'
-    type='text/css'>
-  <link rel="stylesheet" type="text/css" href="css/styles.css" />
-  <script type="text/javascript" src="scripts/three.min.js"></script>
-  <script type="text/javascript" src="scripts/game.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="My portfolio website">
+  <meta name="keywords" content="personal, portfolio, website, html, sass, jquery">
+  <meta name="author" content="Varun Ramakrishnan">
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
-
 <body>
 
-  <!-- Navbar (sit on top) -->
-  <div class="w3-top">
-    <div class="w3-bar" id="myNavbar">
-      <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);"
-        onclick="toggleFunction()" title="Toggle Navigation Menu">
-        <i class="fa fa-bars"></i>
-      </a>
-      <a href="#home" class="w3-bar-item w3-button"><i class="fa fa-home"></i> HOME</a>
-      <a href="#about" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> ABOUT</a>
-      <a href="#portfolio" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PORTFOLIO</a>
-      <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
-    </div>
+<!-- notification for small viewports and landscape oriented smartphones -->
+<div class="device-notification">
+  <a class="device-notification--logo" href="#0">
+    <img src="assets/img/vr-logo-min.png" alt="Global">
+    <p>Varun Ramakrishnan</p>
+  </a>
+  <p class="device-notification--message">I apologize, but I must request you orient your device to portrait or view my website from a larger screen. You won't be disappointed.</p>
+</div>
 
-    <!-- Navbar on small screens -->
-    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
-      <a href="#about" class="w3-bar-item w3-button" onclick="toggleFunction()">ABOUT</a>
-      <a href="#portfolio" class="w3-bar-item w3-button" onclick="toggleFunction()">PORTFOLIO</a>
-      <a href="#contact" class="w3-bar-item w3-button" onclick="toggleFunction()">CONTACT</a>
-    </div>
-  </div>
-
-  <style>
-    body,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-family: "Lato", sans-serif;
-    }
-
-    body,
-    html {
-      background-color: rgb(36, 36, 36);
-      height: 100%;
-      color: rgb(226, 226, 226);
-      line-height: 1.8;
-    }
-
-    /* Create a Parallax Effect */
-    .bgimg-1,
-    .bgimg-2,
-    .bgimg-3 {
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-
-    /* First image (Logo. Full height) */
-    .bgimg-1 {
-      background-image: url("images/Parallax1.jpg");
-      min-height: 100%;
-    }
-
-    /* Second image (Portfolio) */
-    .bgimg-2 {
-      background-image: url("images/Parallax2.jpg");
-      min-height: 400px;
-    }
-
-    /* Third image (Contact) */
-    .bgimg-3 {
-      background-image: url("images/Parallax3.jpg");
-      min-height: 400px;
-    }
-
-    .w3-padding-700 {
-      padding-bottom: 600px;
-    }
-
-    .w3-wide {
-      letter-spacing: 10px;
-    }
-
-    .w3-hover-opacity {
-      cursor: pointer;
-    }
-
-    /* Turn off parallax scrolling for tablets and phones */
-    @media only screen and (max-device-width: 1024px) {
-
-      .bgimg-1,
-      .bgimg-2,
-      .bgimg-3 {
-        background-attachment: scroll;
-      }
-    }
-  </style>
-
-  <!-- First Parallax Image with Logo Text -->
-  <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
-    <div class="w3-display-middle" style="white-space:nowrap;">
-      <span class="w3-center w3-padding-large w3-red w3-xlarge w3-wide w3-animate-opacity">WELCOME TO MY LITTLE CORNER
-        OF THE INTERNET</span>
-    </div>
-  </div>
-
-  <!-- Container (About Section) -->
-  <div class="w3-content w3-container w3-padding-64" id="about">
-    <h3 class="w3-center">ABOUT ME</h3>
-
-    <div class="w3-row">
-      <div class="w3-col m6 w3-center w3-padding-large">
-        <p><b><i class="fa fa-user w3-margin-right"></i>Varun Ramakrishnan</b></p><br>
-        <img src="images/Holi.jpeg" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me"
-          width="500" height="333">
+<div class="perspective effect-rotate-left">
+  <div class="container"><div class="outer-nav--return"></div>
+    <div id="viewport" class="l-viewport">
+      <div class="l-wrapper">
+        <header class="header">
+          <a class="header--logo" href="#0">
+            <img src="assets/img/vr-logo-min.png" alt="Global">
+            <p>Varun Ramakrishnan</p>
+          </a>
+          <button class="header--cta cta">Contact</button>
+          <div class="header--nav-toggle">
+            <span></span>
+          </div>
+        </header>
+        <nav class="l-side-nav">
+          <ul class="side-nav">
+            <li class="is-active"><span>Home</span></li>
+            <li><span>Works</span></li>
+            <li><span>Contact</span></li>
+            <!--<li><span>Hire us</span></li>-->
+          </ul>
+        </nav>
+        <ul class="l-main-content main-content">
+          <li class="l-section section section--is-active">
+            <div class="intro">
+              <div class="intro--banner">
+                <h1>Welcome to<br>my corner of<br>the internet.</h1>
+                <button class="cta">Contact
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
+                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
+                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
+                  </g>
+                  </svg>
+                  <span class="btn-background"></span>
+                </button>
+                <img src="assets/img/intro-banner-min.png" alt="Welcome">
+              </div>
+              <div class="intro--options">
+                <a href="#0">
+                  <h3>Software Engineer</h3>
+                  <p>At PlayStation with a focus on full-stack development, and security as part of their Cross-Platform SDK team.</p>
+                </a>
+                <a href="#0">
+                  <h3>Game Developer</h3>
+                  <p>And passionate gamer who also develops games with a focus on Graphics, and Gameplay Mechanics in my free time.</p>
+                </a>
+                <a href="#0">
+                  <h3>Explorer</h3>
+                  <p>With the objective of experiencing, and documenting everything this amazing pale blue dot has to offer.</p>
+                </a>
+              </div>
+            </div>
+          </li>
+          <li class="l-section section">
+            <div class="work">
+              <h2>Portfolio</h2>
+              <div class="work--lockup">
+                <ul class="slider">
+                  <li class="slider--item slider--item-left">
+                    <a href="inner/Resume.html" target="_blank" rel="noopener noreferrer">
+                      <div class="slider--item-image">
+                        <img src="assets/img/resume-logo.png" alt="Resume">
+                      </div>
+                      <p class="slider--item-title">Resume</p>
+                      <p class="slider--item-description">A website-ified version of my paper resume.</p>
+                    </a>
+                  </li>
+                  <li class="slider--item slider--item-center">
+                    <a href="https://github.com/VarunRamakri7" target="_blank" rel="noopener noreferrer">
+                      <div class="slider--item-image">
+                        <img src="assets/img/github-logo.jpg" alt="GitHub">
+                      </div>
+                      <p class="slider--item-title">GitHub</p>
+                      <p class="slider--item-description">All my repositories with my games, graphics, and simulation projects.</p>
+                    </a>
+                  </li>
+                  <li class="slider--item slider--item-right">
+                    <a href="https://store.steampowered.com/app/1269250/War_Smith/" target="_blank" rel="noopener noreferrer">
+                      <div class="slider--item-image">
+                        <img src="assets/img/warsmith-logo.jpg" alt="War Smith">
+                      </div>
+                      <p class="slider--item-title">War Smith</p>
+                      <p class="slider--item-description">I was the Lead Programmer on this couch co-op that is available on Steam.</p>
+                    </a>
+                  </li>
+                  <!--<li class="slider--item slider--item-right">
+                    <a href="https://varunramakri7.github.io/BottomGun/" target="_blank" rel="noopener noreferrer">
+                      <div class="slider--item-image">
+                        <img src="assets/img/bottomgun-logo.jpg" alt="BottomGun">
+                      </div>
+                      <p class="slider--item-title">BottomGun</p>
+                      <p class="slider--item-description">My take on an endless runner that I made while learning WebGL.</p>
+                    </a>
+                  </li>-->
+                </ul>
+                <div class="slider--prev">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                  viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
+                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
+                    <path d="M561,1169C525,1155,10,640,3,612c-3-13,1-36,8-52c8-15,134-145,281-289C527,41,562,10,590,10c22,0,41,9,61,29
+                    c55,55,49,64-163,278L296,510h575c564,0,576,0,597,20c46,43,37,109-18,137c-19,10-159,13-590,13l-565,1l182,180
+                    c101,99,187,188,193,199c16,30,12,57-12,84C631,1174,595,1183,561,1169z"/>
+                  </g>
+                  </svg>
+                </div>
+                <div class="slider--next">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
+                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
+                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
+                  </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="l-section section">
+            <div class="contact">
+              <div class="contact--lockup">
+                <div class="modal">
+                  <div class="modal--information">
+                    <p>San Francisco, CA</p>
+                    <a href="mailto:oceans.varun+portfoliowebsite@gmail.com">oceans.varun@gmail.com</a>
+                  </div>
+                  <ul class="modal--options">
+                    <li><a href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                    <li><a href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                    <li><a href="mailto:oceans.varun+portfoliowebsite@gmail.com"">Email Me</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
-
-      <!-- About Section -->
-      <div class="w3-col m6 w3-hide-small w3-padding-large">
-        <p>
-          <br>Welcome to my website.</br>
-          <br>I am Varun Ramakrishnan (it's nice to meet you). I am currently a Graduate student at Purdue University
-          majoring in Computer Graphics Programming with almost 5 years of professional and personal experience with
-          Game Development, and Graphics Programming.</br>
-          <br>My strongest programming language is C#, and C++ since I use them the most but I also have experience with
-          Java. My background in CS has given me excelltent debugging and problem-solving skills, and creativity fuels
-          my passion for Games and Graphics.</br>
-          <br>Graphics Programming is my main interest (You can create entire worlds!?). I use Unity with C#, and OpenGL
-          with C++ for all my personal projects.</br>
-          <br>The game engines that I am well versed in are Unreal, and Unity although I have used others.</br>
-          <br>Now that you know the "professional side", let's get into my fun side. When I'm not busy with the above, I
-          love to watch (and <a href="https://www.instagram.com/pada_cassette/">write about</a>) films, take <a
-            href="https://www.instagram.com/vatacheyalalar_vandumurugan/">photos</a>, read, play cricket, and game (RPGs
-          are my go-to).</br>
-          </br>
-        </p>
-      </div>
-    </div>
-    <p class="w3-wide"><i class="fa fa-desktop"></i>Game Engines</p>
-    <div class="w3-light-grey">
-      <div class="w3-container w3-padding-small w3-red w3-center" style="width:95%">95%</div>
-    </div>
-    <p class="w3-wide"><i class="fa fa-laptop"></i>C# and C++</p>
-    <div class="w3-light-grey">
-      <div class="w3-container w3-padding-small w3-red w3-center" style="width:90%">90%</div>
-    </div>
-    <p class="w3-wide"><i class="fa fa-photo"></i>Data Structures and Algorithms</p>
-    <div class="w3-light-grey">
-      <div class="w3-container w3-padding-small w3-red w3-center" style="width:80%">80%</div>
     </div>
   </div>
+  <ul class="outer-nav">
+    <li class="is-active">Home</li>
+    <li>Works</li>
+    <li>Contact</li>
+  </ul>
+</div>
 
-  <!-- Second Parallax Image with Portfolio Text -->
-  <div class="bgimg-2 w3-display-container w3-opacity-min">
-    <div class="w3-display-middle">
-      <span class="w3-xxlarge w3-text-white w3-wide">PORTFOLIO</span>
-    </div>
-  </div>
-
-  <!-- Container for Portfolio Section -->
-  <div class="w3-content w3-container w3-padding-700" id="portfolio">
-    <h3 class="w3-center">MY WORK</h3>
-    <div class="w3-row-padding">
-      <h3 class="w3-quarter"><a href="inner/Resume.html" class="w3-button w3-red"><i
-            class="fa fa-address-card w3-margin-right"></i>Resume</a></h3>
-      <h3 class="w3-quarter"><a href="https://github.com/VarunRamakri7" class="w3-button w3-red"><i
-            class="fa fa-address-card w3-margin-right"></i>GitHub</a></h3>
-      <h3 class="w3-quarter"><a href="https://store.steampowered.com/app/1269250/War_Smith/" class="w3-button w3-red"><i
-            class="fa fa-address-card w3-margin-right"></i>War Smith</a></h3>
-      <h3 class="w3-quarter"><a href="https://varunramakri7.github.io/BottomGun/" class="w3-button w3-red"><i
-            class="fa fa-address-card w3-margin-right"></i>BottomGun</a></h3>
-    </div>
-    <h4 class="w3-center"> Here's the demo of BottomGun! (Just move your mouse)</h3>
-      <div class="w3-col m3 w3-auto">
-        <div class="world w3-auto" id="world" style="width: 1000px; height: 500px;"></div>
-      </div>
-  </div>
-
-  <!-- Third Parallax Image with Portfolio Text -->
-  <div class="bgimg-3 w3-display-container w3-opacity-min">
-    <div class="w3-display-middle">
-      <span class="w3-xxlarge w3-text-black w3-wide">CONTACT</span>
-    </div>
-  </div>
-
-  <!-- Container (Contact Section) -->
-  <div class="w3-content w3-container w3-padding-50" id="contact">
-    <h4 class="w3-center">Have feedback? Send me a message!</h3>
-      <h3 class="w3-center"><a href="https://goo.gl/forms/CRzkxjBayvN9ViDI3" class="w3-button w3-red"><i
-            class="fa fa-paper-plane w3-margin-right"></i>SEND MESSAGE</a></h3>
-
-      <div class="w3-col m8 w3-panel">
-        <div class="w3-large w3-margin-bottom">
-          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> West Lafayette, IN <br>
-          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email:
-          oceans.varun@gmail.com <br>
-        </div>
-      </div>
-  </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
-    <a href="#home" class="w3-button w3-red"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
-    <p>Want to help make this page larger?</p>
-    <p>You could get in touch with me and offer me a job!</p>
-    </div>
-  </footer>
-
-  <script>
-    // Modal Image Gallery
-    function onClick(element) {
-      document.getElementById("img01").src = element.src;
-      document.getElementById("modal01").style.display = "block";
-      var captionText = document.getElementById("caption");
-      captionText.innerHTML = element.alt;
-    }
-
-    // Change style of navbar on scroll-
-    window.onscroll = function () { myFunction() };
-    function myFunction() {
-      var navbar = document.getElementById("myNavbar");
-      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) navbar.className = "w3-bar" + " w3-card-2" + " w3-animate-top" + " w3-white";
-      else navbar.className = navbar.className.replace(" w3-card-2 w3-animate-top w3-white", "");
-    }
-
-    //Used to toggle the menu on small screens when clicking on the menu button
-    function toggleFunction() {
-      var x = document.getElementById("navDemo");
-      if (x.className.indexOf("w3-show") == -1) x.className += " w3-show";
-      else x.className = x.className.replace(" w3-show", "");
-    }
-  </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
+<script src="assets/js/functions-min.js"></script>
 </body>
-
 </html>
