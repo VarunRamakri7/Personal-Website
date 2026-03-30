@@ -192,10 +192,6 @@ $( document ).ready(function() {
           $right = $('.slider--item-right'),
           $item = $('.slider--item');
 
-      $('.slider').animate({ opacity : 0 }, 400);
-
-      setTimeout(function(){
-
       if ($this.hasClass('slider--next')) {
         if (curLeftPos < totalWorks - 1 && curCenterPos < totalWorks - 1 && curRightPos < totalWorks - 1) {
           $left.removeClass('slider--item-left').next().addClass('slider--item-left');
@@ -244,10 +240,6 @@ $( document ).ready(function() {
           }
         }
       }
-
-    }, 400);
-
-    $('.slider').animate({ opacity : 1 }, 400);
 
     });
 
