@@ -2,6 +2,7 @@
   const { THREE } = window;
 
   const canvas = document.getElementById("planet-canvas");
+  const simNav = document.getElementById("sim-nav");
   const popup = document.getElementById("particle-popup");
   const popupTag = document.getElementById("popup-tag");
   const popupTitle = document.getElementById("popup-title");
@@ -628,6 +629,8 @@
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2(2, 2);
   const pointerPx = { x: 0, y: 0 };
+  const navTabs = simNav ? [...simNav.querySelectorAll(".sim-nav__tab")] : [];
+  let navLockedSectionId = null;
   const dragState = {
     active: false,
     moved: false,
@@ -637,6 +640,25 @@
 
   let hoveredBody = null;
   let pinnedBody = null;
+
+  function syncNavUI() {
+    for (const tab of navTabs) {
+      const id = tab.dataset.sectionId;
+      const selected = navLockedSectionId === id;
+      tab.classList.toggle("is-active", selected);
+      tab.setAttribute("aria-selected", selected ? "true" : "false");
+    }
+  }
+
+  function getPopupAnchor() {
+    if (navLockedSectionId) {
+      return {
+        x: window.innerWidth / 2,
+        y: Math.min(130, window.innerHeight * 0.18),
+      };
+    }
+    return { x: pointerPx.x, y: pointerPx.y };
+  }
 
   function showPopup(section, x, y, isPaused) {
     // Positions popup near cursor while clamping to viewport bounds
@@ -747,6 +769,11 @@
       return;
     }
 
+    if (navLockedSectionId) {
+      hoveredBody = null;
+      return;
+    }
+
     raycaster.setFromCamera(pointer, camera);
     const intersections = raycaster.intersectObjects(hitAreas, false);
 
@@ -799,7 +826,7 @@
       dragState.previousY = event.clientY;
     }
 
-    if (pinnedBody) {
+    if (pinnedBody && !navLockedSectionId) {
       showPopup(pinnedBody, pointerPx.x, pointerPx.y, false);
     }
   }
@@ -814,7 +841,7 @@
     hoveredBody = null;
     dragState.active = false;
     canvas.style.cursor = "default";
-    if (!pinnedBody) {
+    if (!pinnedBody && !navLockedSectionId) {
       hidePopup();
     }
   }
@@ -832,11 +859,15 @@
 
     if (hoveredBody) {
       pinnedBody = hoveredBody;
+      navLockedSectionId = null;
+      syncNavUI();
       showPopup(pinnedBody, pointerPx.x, pointerPx.y, true);
       return;
     }
 
     pinnedBody = null;
+    navLockedSectionId = null;
+    syncNavUI();
     hidePopup();
   }
 
@@ -852,7 +883,34 @@
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       pinnedBody = null;
+      navLockedSectionId = null;
+      syncNavUI();
       hidePopup();
+    }
+  });
+
+  for (const tab of navTabs) {
+    tab.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (phase !== PHASE_MAIN) {
+        return;
+      }
+      navLockedSectionId = tab.dataset.sectionId;
+      pinnedBody = null;
+      syncNavUI();
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (phase !== PHASE_MAIN) {
+      return;
+    }
+    if (e.target.closest(".sim-nav")) {
+      return;
+    }
+    if (navLockedSectionId) {
+      navLockedSectionId = null;
+      syncNavUI();
     }
   });
 
@@ -880,19 +938,32 @@
 
     updateHoverState();
 
+    if (simNav) {
+      simNav.classList.toggle("sim-nav--hidden", phase !== PHASE_MAIN);
+    }
+    if (phase !== PHASE_MAIN && navLockedSectionId) {
+      navLockedSectionId = null;
+      syncNavUI();
+    }
+
     if (phase === PHASE_WARP) {
       warpElapsed += dt;
       updateWarpField(dt);
       hidePopup();
       canvas.style.cursor = "default";
     } else if (phase === PHASE_MAIN) {
-      const isPaused = hoveredBody !== null;
+      const simFrozen = navLockedSectionId !== null;
+      const isPaused = hoveredBody !== null || simFrozen;
       if (!isPaused) {
         integrateThreeBody(dt);
       }
       resonancePulse = Math.max(0, resonancePulse - dt * 0.95);
 
-      const activeBody = hoveredBody || pinnedBody;
+      const activeBody = simFrozen
+        ? bodies.find((b) => b.id === navLockedSectionId) || null
+        : hoveredBody || pinnedBody;
+
+      const spinDt = simFrozen ? 0 : dt;
 
       for (const body of bodies) {
         // Body-local idle spin + active/near-collision visual emphasis
@@ -901,16 +972,18 @@
         body.material.uniforms.uPointSize.value = (isActive ? 185 : 150) + resonancePulse * 36;
         body.core.material.emissiveIntensity = (isActive ? 0.85 : 0.65) + resonancePulse * 0.7;
 
-        body.group.rotation.x += body.spin.x * dt;
-        body.group.rotation.y += body.spin.y * dt;
-        body.group.rotation.z += body.spin.z * dt;
+        body.group.rotation.x += body.spin.x * spinDt;
+        body.group.rotation.y += body.spin.y * spinDt;
+        body.group.rotation.z += body.spin.z * spinDt;
 
         const targetScale = (isActive ? 1.08 : 1) + resonancePulse * 0.09;
         body.group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.14);
       }
 
+      const anchor = getPopupAnchor();
+      const pausedPopup = hoveredBody !== null || simFrozen;
       if (activeBody) {
-        showPopup(activeBody, pointerPx.x, pointerPx.y, hoveredBody !== null);
+        showPopup(activeBody, anchor.x, anchor.y, pausedPopup);
       } else {
         hidePopup();
       }

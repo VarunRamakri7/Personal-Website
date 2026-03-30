@@ -102,6 +102,93 @@ body {
   }
 }
 
+.sim-nav {
+  position: fixed;
+  z-index: 5;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.65rem 0.5rem calc(0.65rem + env(safe-area-inset-top, 0));
+  padding-top: calc(0.65rem + env(safe-area-inset-top, 0));
+  transition: opacity 0.25s var(--ease-out), visibility 0.25s;
+}
+
+.sim-nav--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sim-nav__track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: min(440px, calc(100vw - 1.5rem));
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: rgba(6, 12, 26, 0.55);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px var(--glass-highlight) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset;
+}
+
+.sim-nav__tab {
+  position: relative;
+  appearance: none;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.48rem 1.1rem;
+  background: transparent;
+  color: var(--muted);
+  font: 500 0.78rem/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 0.2s var(--ease-out),
+    background 0.22s var(--ease-out),
+    border-color 0.2s ease,
+    box-shadow 0.22s var(--ease-out),
+    transform 0.14s var(--ease-snap);
+}
+
+.sim-nav__tab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.sim-nav__tab:active {
+  transform: scale(0.97);
+}
+
+.sim-nav__tab.is-active {
+  color: #f5f8ff;
+  background: linear-gradient(
+    165deg,
+    rgba(149, 177, 255, 0.42) 0%,
+    rgba(100, 130, 220, 0.28) 100%
+  );
+  border-color: rgba(149, 177, 255, 0.55);
+  box-shadow:
+    0 0 20px rgba(120, 155, 255, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.15) inset;
+}
+
+.sim-nav__tab:focus-visible {
+  outline: 2px solid rgba(149, 177, 255, 0.85);
+  outline-offset: 2px;
+}
+
 .warp-intro {
   position: fixed;
   z-index: 6;
