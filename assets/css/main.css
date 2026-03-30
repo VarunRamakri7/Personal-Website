@@ -851,7 +851,20 @@ html[data-theme="light"] .side-nav > li {
   color: var(--color-text-muted);
 }
 
+/* Minified `.side-nav>li span { color: #fff }` wins over `li` alone — force dark labels in light mode */
+html[data-theme="light"] .side-nav > li::before {
+  color: var(--color-text-muted);
+}
+
+html[data-theme="light"] .side-nav > li span {
+  color: var(--color-text);
+}
+
 html[data-theme="light"] .side-nav li.is-active {
+  color: var(--color-accent);
+}
+
+html[data-theme="light"] .side-nav li.is-active span {
   color: var(--color-accent);
 }
 
