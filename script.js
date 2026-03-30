@@ -631,6 +631,8 @@
   const pointerPx = { x: 0, y: 0 };
   const navTabs = simNav ? [...simNav.querySelectorAll(".sim-nav__tab")] : [];
   let navLockedSectionId = null;
+  /** When true, user picked a tab from the nav: freeze sim and block raycast. Canvas pin does not set this. */
+  let navFreezeSim = false;
   const dragState = {
     active: false,
     moved: false,
@@ -650,14 +652,18 @@
     }
   }
 
-  function getPopupAnchor() {
-    if (navLockedSectionId) {
-      return {
-        x: window.innerWidth / 2,
-        y: Math.min(130, window.innerHeight * 0.18),
-      };
+  const tempScreen = new THREE.Vector3();
+
+  function getPopupAnchorForBody(body) {
+    if (!body) {
+      return { x: pointerPx.x, y: pointerPx.y };
     }
-    return { x: pointerPx.x, y: pointerPx.y };
+    body.group.getWorldPosition(tempScreen);
+    tempScreen.project(camera);
+    const rect = canvas.getBoundingClientRect();
+    const x = (tempScreen.x * 0.5 + 0.5) * rect.width + rect.left;
+    const y = (-tempScreen.y * 0.5 + 0.5) * rect.height + rect.top;
+    return { x, y };
   }
 
   function showPopup(section, x, y, isPaused) {
@@ -697,6 +703,8 @@
     warpElapsed = 0;
     hoveredBody = null;
     pinnedBody = null;
+    navLockedSectionId = null;
+    navFreezeSim = false;
     dragState.active = false;
     dragState.moved = false;
     warpGroup.visible = true;
@@ -769,7 +777,7 @@
       return;
     }
 
-    if (navLockedSectionId) {
+    if (navFreezeSim) {
       hoveredBody = null;
       return;
     }
@@ -826,9 +834,6 @@
       dragState.previousY = event.clientY;
     }
 
-    if (pinnedBody && !navLockedSectionId) {
-      showPopup(pinnedBody, pointerPx.x, pointerPx.y, false);
-    }
   }
 
   function onPointerUp() {
@@ -846,6 +851,13 @@
     }
   }
 
+  function clearSectionSelection() {
+    pinnedBody = null;
+    navLockedSectionId = null;
+    navFreezeSim = false;
+    syncNavUI();
+  }
+
   function onClick() {
     // Click = pin hovered body popup. Click empty space = unpin
     if (phase !== PHASE_MAIN) {
@@ -859,15 +871,13 @@
 
     if (hoveredBody) {
       pinnedBody = hoveredBody;
-      navLockedSectionId = null;
+      navLockedSectionId = pinnedBody.id;
+      navFreezeSim = false;
       syncNavUI();
-      showPopup(pinnedBody, pointerPx.x, pointerPx.y, true);
       return;
     }
 
-    pinnedBody = null;
-    navLockedSectionId = null;
-    syncNavUI();
+    clearSectionSelection();
     hidePopup();
   }
 
@@ -882,9 +892,7 @@
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      pinnedBody = null;
-      navLockedSectionId = null;
-      syncNavUI();
+      clearSectionSelection();
       hidePopup();
     }
   });
@@ -897,6 +905,7 @@
       }
       navLockedSectionId = tab.dataset.sectionId;
       pinnedBody = null;
+      navFreezeSim = true;
       syncNavUI();
     });
   }
@@ -908,10 +917,10 @@
     if (e.target.closest(".sim-nav")) {
       return;
     }
-    if (navLockedSectionId) {
-      navLockedSectionId = null;
-      syncNavUI();
+    if (e.target === canvas) {
+      return;
     }
+    clearSectionSelection();
   });
 
   function resize() {
@@ -941,8 +950,10 @@
     if (simNav) {
       simNav.classList.toggle("sim-nav--hidden", phase !== PHASE_MAIN);
     }
-    if (phase !== PHASE_MAIN && navLockedSectionId) {
+    if (phase !== PHASE_MAIN && (navLockedSectionId || navFreezeSim || pinnedBody)) {
+      pinnedBody = null;
       navLockedSectionId = null;
+      navFreezeSim = false;
       syncNavUI();
     }
 
@@ -952,7 +963,7 @@
       hidePopup();
       canvas.style.cursor = "default";
     } else if (phase === PHASE_MAIN) {
-      const simFrozen = navLockedSectionId !== null;
+      const simFrozen = navFreezeSim;
       const isPaused = hoveredBody !== null || simFrozen;
       if (!isPaused) {
         integrateThreeBody(dt);
@@ -980,7 +991,7 @@
         body.group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.14);
       }
 
-      const anchor = getPopupAnchor();
+      const anchor = activeBody ? getPopupAnchorForBody(activeBody) : { x: pointerPx.x, y: pointerPx.y };
       const pausedPopup = hoveredBody !== null || simFrozen;
       if (activeBody) {
         showPopup(activeBody, anchor.x, anchor.y, pausedPopup);
