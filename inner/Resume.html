@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Resume — Varun Ramakrishnan, software engineer and game developer.">
+    <meta name="theme-color" content="#0a0a0b">
     <title>Resume — Varun Ramakrishnan</title>
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,10 +29,10 @@
         <div class="resume-card resume-profile">
           <div class="resume-photo-wrap">
             <img src="images/Resume.jpeg" width="400" height="400" alt="Portrait of Varun Ramakrishnan">
-            <div class="resume-photo-caption">
-              <h1 class="resume-name">Varun Ramakrishnan</h1>
-              <p class="resume-title">Software Engineer</p>
-            </div>
+          </div>
+          <div class="resume-photo-caption">
+            <h1 class="resume-name">Varun Ramakrishnan</h1>
+            <p class="resume-title">Software Engineer</p>
           </div>
           <div class="resume-meta">
             <p>
@@ -37,20 +44,12 @@
               <a href="mailto:oceans.varun@gmail.com">oceans.varun@gmail.com</a>
             </p>
           </div>
-          <section class="resume-lang" aria-labelledby="lang-heading">
-            <h2 id="lang-heading" class="resume-section-heading">Languages</h2>
-            <ul class="resume-lang-list">
-              <li>English <span class="resume-lang-note">fluent</span></li>
-              <li>Tamil <span class="resume-lang-note">fluent</span></li>
-              <li>Hindi <span class="resume-lang-note">conversational</span></li>
-            </ul>
-          </section>
         </div>
       </aside>
 
       <main id="resume-main" class="resume-main">
         <section class="resume-card resume-section" aria-labelledby="work-heading">
-          <h2 id="work-heading" class="resume-h2">Work experience &amp; achievements</h2>
+          <h2 id="work-heading" class="resume-h2">Work Experience &amp; Achievements</h2>
           <ul class="resume-timeline">
             <li class="resume-item">
               <h3 class="resume-h3">Software Engineer at <a href="https://www.playstation.com/">PlayStation</a></h3>
@@ -139,7 +138,17 @@
 
     <footer class="resume-footer">
       <p>Want to help make this page larger?</p>
-      <p>You could get in touch and offer me a job.</p>
+      <p>You could get in touch and offer me a job!</p>
     </footer>
+
+    <button type="button" class="theme-toggle" aria-label="Switch theme" aria-pressed="false">
+      <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </span>
+      <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+    <script src="../assets/js/theme.js"></script>
   </body>
 </html>
