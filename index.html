@@ -1,172 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <title>Varun Ramakrishnan</title>
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="My portfolio website">
-  <meta name="keywords" content="personal, portfolio, website, html, sass, jquery">
-  <meta name="author" content="Varun Ramakrishnan">
-  <link rel="stylesheet" href="assets/css/main.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Varun Ramakrishnan</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="planet-canvas" aria-label="Particle sphere"></canvas>
 
-<!-- notification for small viewports and landscape oriented smartphones -->
-<div class="device-notification">
-  <a class="device-notification--logo" href="#0">
-    <img src="assets/img/vr-logo-min.png" alt="Global">
-    <p>Varun Ramakrishnan</p>
-  </a>
-  <p class="device-notification--message">I apologize, but I must request you orient your device to portrait or view my website from a larger screen. You won't be disappointed.</p>
-</div>
+    <section id="warp-intro" class="warp-intro" aria-live="polite">
+      <p class="warp-question">Enter Warp Speed?</p>
+      <button id="warp-start" class="warp-btn" type="button">Yes</button>
+    </section>
 
-<div class="perspective effect-rotate-left">
-  <div class="container"><div class="outer-nav--return"></div>
-    <div id="viewport" class="l-viewport">
-      <div class="l-wrapper">
-        <header class="header">
-          <a class="header--logo" href="#0">
-            <img src="assets/img/vr-logo-min.png" alt="Global">
-            <p>Varun Ramakrishnan</p>
-          </a>
-          <button class="header--cta cta">Contact</button>
-          <div class="header--nav-toggle">
-            <span></span>
-          </div>
-        </header>
-        <nav class="l-side-nav">
-          <ul class="side-nav">
-            <li class="is-active"><span>Home</span></li>
-            <li><span>Works</span></li>
-            <li><span>Contact</span></li>
-            <!--<li><span>Hire us</span></li>-->
-          </ul>
-        </nav>
-        <ul class="l-main-content main-content">
-          <li class="l-section section section--is-active">
-            <div class="intro">
-              <div class="intro--banner">
-                <h1>Welcome to<br>my corner of<br>the internet.</h1>
-                <button class="cta">Contact
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
-                  </g>
-                  </svg>
-                  <span class="btn-background"></span>
-                </button>
-                <img src="assets/img/intro-banner-min.png" alt="Welcome">
-              </div>
-              <div class="intro--options">
-                <a href="#0">
-                  <h3>Software Engineer</h3>
-                  <p>At PlayStation with a focus on full-stack development, and security as part of their Cross-Platform SDK team.</p>
-                </a>
-                <a href="#0">
-                  <h3>Game Developer</h3>
-                  <p>And passionate gamer who also develops games with a focus on Graphics, and Gameplay Mechanics in my free time.</p>
-                </a>
-                <a href="#0">
-                  <h3>Explorer</h3>
-                  <p>With the objective of experiencing, and documenting everything this amazing pale blue dot has to offer.</p>
-                </a>
-              </div>
-            </div>
-          </li>
-          <li class="l-section section">
-            <div class="work">
-              <h2>Portfolio</h2>
-              <div class="work--lockup">
-                <ul class="slider">
-                  <li class="slider--item slider--item-left">
-                    <a href="inner/Resume.html" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/resume-logo.png" alt="Resume">
-                      </div>
-                      <p class="slider--item-title">Resume</p>
-                      <p class="slider--item-description">A website-ified version of my paper resume.</p>
-                    </a>
-                  </li>
-                  <li class="slider--item slider--item-center">
-                    <a href="https://github.com/VarunRamakri7" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/github-logo.jpg" alt="GitHub">
-                      </div>
-                      <p class="slider--item-title">GitHub</p>
-                      <p class="slider--item-description">All my repositories with my games, graphics, and simulation projects.</p>
-                    </a>
-                  </li>
-                  <li class="slider--item slider--item-right">
-                    <a href="https://store.steampowered.com/app/1269250/War_Smith/" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/warsmith-logo.jpg" alt="War Smith">
-                      </div>
-                      <p class="slider--item-title">War Smith</p>
-                      <p class="slider--item-description">I was the Lead Programmer on this couch co-op that is available on Steam.</p>
-                    </a>
-                  </li>
-                  <!--<li class="slider--item slider--item-right">
-                    <a href="https://varunramakri7.github.io/BottomGun/" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/bottomgun-logo.jpg" alt="BottomGun">
-                      </div>
-                      <p class="slider--item-title">BottomGun</p>
-                      <p class="slider--item-description">My take on an endless runner that I made while learning WebGL.</p>
-                    </a>
-                  </li>-->
-                </ul>
-                <div class="slider--prev">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                  viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M561,1169C525,1155,10,640,3,612c-3-13,1-36,8-52c8-15,134-145,281-289C527,41,562,10,590,10c22,0,41,9,61,29
-                    c55,55,49,64-163,278L296,510h575c564,0,576,0,597,20c46,43,37,109-18,137c-19,10-159,13-590,13l-565,1l182,180
-                    c101,99,187,188,193,199c16,30,12,57-12,84C631,1174,595,1183,561,1169z"/>
-                  </g>
-                  </svg>
-                </div>
-                <div class="slider--next">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
-                  </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="l-section section">
-            <div class="contact">
-              <div class="contact--lockup">
-                <div class="modal">
-                  <div class="modal--information">
-                    <p>San Francisco, CA</p>
-                    <a href="mailto:oceans.varun+portfoliowebsite@gmail.com">oceans.varun@gmail.com</a>
-                  </div>
-                  <ul class="modal--options">
-                    <li><a href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-                    <li><a href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                    <li><a href="mailto:oceans.varun+portfoliowebsite@gmail.com"">Email Me</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
+    <aside id="particle-popup" class="popup is-hidden" aria-live="polite">
+      <div class="popup-inner">
+        <p class="popup-tag" id="popup-tag">HOME</p>
+        <h2 id="popup-title">Welcome</h2>
+        <p id="popup-copy">This is my personal website. It runs a three-body simulation.</p>
       </div>
-    </div>
-  </div>
-  <ul class="outer-nav">
-    <li class="is-active">Home</li>
-    <li>Works</li>
-    <li>Contact</li>
-  </ul>
-</div>
+    </aside>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
-<script src="assets/js/functions-min.js"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"
+      onerror="this.onerror=null;this.src='https://unpkg.com/three@0.160.0/build/three.min.js';"
+    ></script>
+    <script src="./script.js"></script>
+  </body>
 </html>
