@@ -2,11 +2,22 @@
   const { THREE } = window;
 
   const canvas = document.getElementById("planet-canvas");
+  const popup = document.getElementById("particle-popup");
+  const popupTag = document.getElementById("popup-tag");
+  const popupTitle = document.getElementById("popup-title");
+  const popupCopy = document.getElementById("popup-copy");
+  // const warpIntro = document.getElementById("warp-intro");
+  // const warpStartBtn = document.getElementById("warp-start");
 
   if (!THREE) {
     console.error("Three.js did not load. Check network/CDN access.");
     return;
   }
+
+  // Page phases
+  // const PHASE_INTRO = "intro";
+  // const PHASE_WARP = "warp";
+  const PHASE_MAIN = "main";
 
   // Bodies of three-body world.
   // position/velocity are intentionally hand-tuned for visually interesting motion.
@@ -375,6 +386,8 @@
   const bodies = sections.map(createBody);
   const hitAreas = bodies.map((body) => body.hitArea);
 
+  // Mutable runtime state
+  let phase = PHASE_MAIN;
   worldGroup.visible = true;
 
   const tempForce = new THREE.Vector3();
@@ -553,7 +566,7 @@
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2(2, 2);
-  // const pointerPx = { x: 0, y: 0 };
+  const pointerPx = { x: 0, y: 0 };
   const dragState = {
     active: false,
     moved: false,
@@ -562,6 +575,36 @@
   };
 
   let hoveredBody = null;
+  let pinnedBody = null;
+
+  function showPopup(section, x, y, isPaused) {
+    // Positions popup near cursor while clamping to viewport bounds.
+    popupTag.textContent = section.tag;
+    popupTitle.textContent = section.title;
+    let copy = isPaused
+      ? `${section.copy} (Simulation paused)`
+      : section.copy;
+    if (resonancePulse > 0.45) {
+      copy += " Resonance surge.";
+    }
+    popupCopy.textContent = copy;
+
+    const margin = 12;
+    const popupWidth = popup.offsetWidth || 280;
+    const popupHeight = popup.offsetHeight || 120;
+
+    const left = Math.max(margin, Math.min(x + 16, window.innerWidth - popupWidth - margin));
+    const top = Math.max(margin, Math.min(y + 16, window.innerHeight - popupHeight - margin));
+
+    popup.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+    popup.classList.remove("is-hidden");
+  }
+
+  function hidePopup() {
+    popup.classList.add("is-hidden");
+  }
+
+  /*
 
   function updateHoverState() {
     // Raycast against invisible hit spheres so interactions are forgiving.
@@ -588,6 +631,8 @@
     const rect = canvas.getBoundingClientRect();
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    pointerPx.x = event.clientX;
+    pointerPx.y = event.clientY;
 
     if (dragState.active) {
       const deltaX = event.clientX - dragState.previousX;
@@ -605,6 +650,10 @@
       dragState.previousX = event.clientX;
       dragState.previousY = event.clientY;
     }
+
+    if (pinnedBody) {
+      showPopup(pinnedBody, pointerPx.x, pointerPx.y, false);
+    }
   }
 
   function onPointerUp() {
@@ -617,12 +666,45 @@
     hoveredBody = null;
     dragState.active = false;
     canvas.style.cursor = "default";
+    if (!pinnedBody) {
+      hidePopup();
+    }
   }
+
+  function onClick() {
+    // Click = pin hovered body popup. Click empty space = unpin.
+    if (phase !== PHASE_MAIN) {
+      return;
+    }
+
+    if (dragState.moved) {
+      dragState.moved = false;
+      return;
+    }
+
+    if (hoveredBody) {
+      pinnedBody = hoveredBody;
+      showPopup(pinnedBody, pointerPx.x, pointerPx.y, true);
+      return;
+    }
+
+    pinnedBody = null;
+    hidePopup();
+  }
+
 
   canvas.addEventListener("pointerdown", onPointerDown);
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerleave", onPointerLeave);
+  canvas.addEventListener("click", onClick);
   window.addEventListener("pointerup", onPointerUp);
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      pinnedBody = null;
+      hidePopup();
+    }
+  });
 
   function resize() {
     // Keep renderer/camera in sync with viewport.
@@ -651,7 +733,7 @@
     }
     resonancePulse = Math.max(0, resonancePulse - dt * 0.95);
 
-    const activeBody = hoveredBody;
+    const activeBody = hoveredBody || pinnedBody;
 
     for (const body of bodies) {
       body.material.uniforms.uTime.value = elapsed * 1.2;
@@ -665,6 +747,12 @@
 
       const targetScale = (isActive ? 1.08 : 1) + resonancePulse * 0.09;
       body.group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.14);
+    }
+
+    if (activeBody) {
+      showPopup(activeBody, pointerPx.x, pointerPx.y, hoveredBody !== null);
+    } else {
+      hidePopup();
     }
 
     if (dragState.active) {
