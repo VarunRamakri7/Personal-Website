@@ -1,8 +1,19 @@
 /**
- * Portfolio UI: sections, outer nav, portfolio slider — vanilla JS
+ * Portfolio UI — vanilla JS.
+ *
+ * Responsibilities:
+ * - Full-page sections: sync `.side-nav` / `.outer-nav` with `.main-content > li`
+ * - Input: wheel (accumulated), keyboard ↑/↓, touch swipe on `#viewport`, nav clicks, header CTA
+ * - Hamburger: toggles `.perspective--modalview` + animation classes; wheel is disabled while open
+ * - Works area: three-slot carousel (left/center/right) via `.slider--prev` / `.slider--next`
+ * - Contact: floating labels on `.work-request--information` inputs (blur + `has-value`)
+ *
+ * Custom events (document): `portfolio:nav-modal-opened`, `portfolio:nav-modal-closed` — reset wheel lock.
  */
 (function () {
   "use strict";
+
+  // --- Small DOM helpers (no external deps) ---
 
   function qs(sel, root) {
     return (root || document).querySelector(sel);
@@ -23,12 +34,15 @@
     return !!(p && p.classList.contains("perspective--modalview"));
   }
 
+  /** Map WheelEvent to pixels (handles deltaMode for lines/pages). */
   function normalizeWheelDeltaY(e) {
     var dy = e.deltaY !== undefined ? e.deltaY : 0;
     if (e.deltaMode === 1) dy *= 16;
     if (e.deltaMode === 2) dy *= 400;
     return dy;
   }
+
+  // --- Section index: keep side + outer nav lists in sync with active section ---
 
   function updateNavs(nextPos) {
     qsa(".side-nav li").forEach(function (el) {
@@ -43,6 +57,9 @@
     if (outer[nextPos]) outer[nextPos].classList.add("is-active");
   }
 
+  /**
+   * Show one `.main-content > li`, add transition hints (next/prev), toggle header CTA on middle sections.
+   */
   function updateContent(curPos, nextPos, lastItem) {
     var main = qs(".main-content");
     if (!main) return;
@@ -83,6 +100,10 @@
     }
   }
 
+  /**
+   * One vertical “step”: from wheel direction (number), keydown (38/40), or swipe pseudo-events.
+   * Wraps at first/last section.
+   */
   function updateHelper(param) {
     var side = qs(".side-nav");
     if (!side) return;
@@ -126,6 +147,8 @@
     }
   }
 
+  // --- Delegated clicks on `.side-nav` / `.outer-nav` ---
+
   function bindNavClicks() {
     function onNavClick(e) {
       var li = e.target.closest("li");
@@ -150,6 +173,7 @@
     if (outerNav) outerNav.addEventListener("click", onNavClick);
   }
 
+  /** Header “Contact” jumps to the last section (same index as last nav item). */
   function bindCta() {
     qsa(".cta").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -166,6 +190,10 @@
     });
   }
 
+  /**
+   * Wheel/trackpad: prevent default document scroll; accumulate deltaY until threshold, then one section change.
+   * Idle reset clears partial accumulation; lock prevents rapid double-fires. Modal open skips handling.
+   */
   function bindWheel() {
     var sectionChangeLocked = false;
     var lockTimer = null;
@@ -227,6 +255,7 @@
     document.addEventListener("portfolio:nav-modal-opened", resetWheelState);
   }
 
+  /** Arrow up/down mirror one vertical section step (same as wheel). */
   function bindKeyboard() {
     document.addEventListener(
       "keydown",
@@ -243,6 +272,7 @@
     );
   }
 
+  /** Simple swipe on `#viewport`: large vertical delta maps to swipeup/swipedown for `updateHelper`. */
   function bindTouchSwipe() {
     var viewport = qs("#viewport");
     if (!viewport) return;
@@ -281,6 +311,10 @@
     );
   }
 
+  /**
+   * Hamburger opens 3D perspective overlay; return button or outer-nav item closes it.
+   * Dispatches custom events so `bindWheel` can reset accumulation/lock.
+   */
   function bindOuterNav() {
     var perspective = qs(".perspective");
     var toggle = qs(".header--nav-toggle");
@@ -330,6 +364,9 @@
     }
   }
 
+  /**
+   * Portfolio carousel: three visible slots (left/center/right classes). Prev/next shift indices and wrap at ends.
+   */
   function bindWorkSlider() {
     var lockup = qs(".work--lockup");
     if (!lockup) return;
@@ -504,6 +541,7 @@
     });
   }
 
+  /** Floating labels: toggle `has-value` from input content; `scrollTo(0,0)` avoids iOS oddities on blur. */
   function bindWorkRequestLabels() {
     qsa(".work-request--information input").forEach(function (input) {
       input.addEventListener("blur", function () {
@@ -513,6 +551,8 @@
       });
     });
   }
+
+  // --- Boot: all listeners after DOM ready ---
 
   ready(function () {
     bindNavClicks();
