@@ -6,21 +6,21 @@
   const popupTag = document.getElementById("popup-tag");
   const popupTitle = document.getElementById("popup-title");
   const popupCopy = document.getElementById("popup-copy");
-  // const warpIntro = document.getElementById("warp-intro");
-  // const warpStartBtn = document.getElementById("warp-start");
+  const warpIntro = document.getElementById("warp-intro");
+  const warpStartBtn = document.getElementById("warp-start");
 
   if (!THREE) {
     console.error("Three.js did not load. Check network/CDN access.");
     return;
   }
 
-  // Page phases
-  // const PHASE_INTRO = "intro";
-  // const PHASE_WARP = "warp";
-  const PHASE_MAIN = "main";
+  // Page phases:
+  const PHASE_INTRO = "intro"; // atmospheric background + "Enter Warp Speed?" overlay
+  const PHASE_WARP = "warp"; // short transition effect before revealing simulation
+  const PHASE_MAIN = "main"; // interactive three-body scene
 
-  // Bodies of three-body world.
-  // position/velocity are intentionally hand-tuned for visually interesting motion.
+  // Bodies of three-body world
+  // position/velocity are intentionally hand-tuned for visually interesting motion
   const sections = [
     {
       id: "home",
@@ -75,10 +75,11 @@
   const LOW_ENERGY_DELAY = 1.8;
   const ENERGY_KICK = 1.7;
   const ENERGY_RANDOMNESS = 0.32;
+  const WARP_DURATION = 2.8;
   const BASE_CAMERA_Z = 36;
   const BASE_CAMERA_FOV = 40;
 
-  // Core Three.js scene setup.
+  // Core Three.js scene setup
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(BASE_CAMERA_FOV, 1, 0.1, 1000);
   camera.position.set(0, 0, BASE_CAMERA_Z);
@@ -105,6 +106,10 @@
   // backgroundGroup: always-visible ambience behind the simulation
   const backgroundGroup = new THREE.Group();
   scene.add(backgroundGroup);
+
+  // warpGroup: only visible during warp transition
+  const warpGroup = new THREE.Group();
+  scene.add(warpGroup);
 
   // Invisible "container sphere" for conceptual world boundary and easier future extensions
   const worldSphere = new THREE.Mesh(
@@ -206,7 +211,7 @@
   }
 
   function createBackgroundDust(count) {
-    // Low-cost atmospheric filler points spread through deep space.
+    // Low-cost atmospheric filler points spread through deep space
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const colorA = new THREE.Color("#a7c1ff");
@@ -294,8 +299,60 @@
     }
   }
 
+  function createWarpField() {
+    // Create line-segment "stars" used in the warp sequence
+    const streakCount = 520;
+    const positions = new Float32Array(streakCount * 2 * 3);
+    const colors = new Float32Array(streakCount * 2 * 3);
+    const speeds = new Float32Array(streakCount);
+    const tailLengths = new Float32Array(streakCount);
+
+    const color = new THREE.Color("#dfe9ff");
+
+    for (let i = 0; i < streakCount; i += 1) {
+      const i6 = i * 6;
+      const x = (Math.random() - 0.5) * 56;
+      const y = (Math.random() - 0.5) * 36;
+      const z = -220 + Math.random() * 220;
+
+      positions[i6] = x;
+      positions[i6 + 1] = y;
+      positions[i6 + 2] = z;
+      positions[i6 + 3] = x;
+      positions[i6 + 4] = y;
+      positions[i6 + 5] = z - 2;
+
+      colors[i6] = color.r;
+      colors[i6 + 1] = color.g;
+      colors[i6 + 2] = color.b;
+      colors[i6 + 3] = color.r;
+      colors[i6 + 4] = color.g;
+      colors[i6 + 5] = color.b;
+
+      speeds[i] = 95 + Math.random() * 165;
+      tailLengths[i] = 7 + Math.random() * 16;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const lines = new THREE.LineSegments(geometry, material);
+    warpGroup.add(lines);
+
+    return { geometry, speeds, tailLengths, streakCount };
+  }
+
   function createBodyCloud(baseColorHex) {
-    // Creates the particle shell around one section body.
+    // Creates the particle shell around one section body
     const baseColor = new THREE.Color(baseColorHex);
     const white = new THREE.Color("#ffffff");
 
@@ -341,7 +398,7 @@
   }
 
   function createBody(section) {
-    // Combines visual shell + small glowing core + invisible hit area used by raycasting.
+    // Combines visual shell + small glowing core + invisible hit area used by raycasting
     const group = new THREE.Group();
     const cloud = createBodyCloud(section.color);
     group.add(cloud.points);
@@ -380,15 +437,19 @@
     };
   }
 
-  // Build scene content.
+  // Build scene content
   populateBackgroundAtmosphere();
+  const warpField = createWarpField();
 
   const bodies = sections.map(createBody);
   const hitAreas = bodies.map((body) => body.hitArea);
 
   // Mutable runtime state
-  let phase = PHASE_MAIN;
-  worldGroup.visible = true;
+  let phase = PHASE_INTRO;
+  let warpElapsed = 0;
+
+  worldGroup.visible = false;
+  warpGroup.visible = false;
 
   const tempForce = new THREE.Vector3();
   const tempDelta = new THREE.Vector3();
@@ -411,7 +472,7 @@
     // 5) resonance + anti-stall energy kick
     let minPairDistance = Infinity;
 
-    // Reset per-frame acceleration.
+    // Reset per-frame acceleration
     for (const body of bodies) {
       body.acceleration.set(0, 0, 0);
     }
@@ -436,7 +497,7 @@
         bodyB.acceleration.addScaledVector(tempForce, -factor * bodyA.mass);
 
         if (rawDist < OVERLAP_AVOID_DISTANCE) {
-          // Soft repulsion keeps bodies from collapsing into each other.
+          // Soft repulsion keeps bodies from collapsing into each other
           const overlapRatio = 1 - rawDist / OVERLAP_AVOID_DISTANCE;
           const repulsion = OVERLAP_REPULSION * overlapRatio * overlapRatio;
           const repulseScaleA = -(repulsion / rawDist) / Math.max(bodyA.mass, 0.12);
@@ -452,7 +513,7 @@
           }
           tempTangent.crossVectors(tempNormal, tempAxis).normalize();
 
-          // Tangential impulse adds "slingshot-like" motion during close passes.
+          // Tangential impulse adds "slingshot-like" motion during close passes
           const swirlStrength = CLOSE_PASS_TANGENTIAL * overlapRatio * dt * SIM_SPEED;
           bodyA.velocity.addScaledVector(tempTangent, -swirlStrength / Math.max(bodyA.mass, 0.12));
           bodyB.velocity.addScaledVector(tempTangent, swirlStrength / Math.max(bodyB.mass, 0.12));
@@ -464,7 +525,7 @@
     velocityCenter.set(0, 0, 0);
     let totalMass = 0;
 
-    // Semi-implicit Euler integration with damping and mild center pull.
+    // Semi-implicit Euler integration with damping and mild center pull
     for (const body of bodies) {
       body.velocity.addScaledVector(body.acceleration, dt * SIM_SPEED);
       body.velocity.addScaledVector(body.group.position, -CENTER_PULL * dt);
@@ -485,7 +546,7 @@
         const dist = tempDelta.length();
 
         if (dist > 1e-6 && dist < HARD_MIN_DISTANCE) {
-          // Hard separation safety net for any residual penetration.
+          // Hard separation safety net for any residual penetration
           tempDelta.multiplyScalar(1 / dist);
 
           const penetration = HARD_MIN_DISTANCE - dist;
@@ -507,7 +568,7 @@
     }
 
     if (totalMass > 0) {
-      // Remove translation drift so bodies remain centered in view over time.
+      // Remove translation drift so bodies remain centered in view over time
       centerOfMass.multiplyScalar(1 / totalMass);
       velocityCenter.multiplyScalar(1 / totalMass);
 
@@ -518,7 +579,7 @@
     }
 
     if (minPairDistance < RESONANCE_DISTANCE) {
-      // Drives visual pulse during near-collision moments.
+      // Drives visual pulse during near-collision moments
       const resonanceGain = 1 - minPairDistance / RESONANCE_DISTANCE;
       resonancePulse = Math.max(resonancePulse, resonanceGain);
     }
@@ -535,7 +596,7 @@
     }
 
     if (lowEnergyTimer > LOW_ENERGY_DELAY) {
-      // If motion gets too slow, inject controlled kicks to re-energize system.
+      // If motion gets too slow, inject controlled kicks to re-energize system
       for (const body of bodies) {
         const radialLength = body.group.position.length() + 1e-6;
         tempRadial.copy(body.group.position).multiplyScalar(1 / radialLength);
@@ -578,7 +639,7 @@
   let pinnedBody = null;
 
   function showPopup(section, x, y, isPaused) {
-    // Positions popup near cursor while clamping to viewport bounds.
+    // Positions popup near cursor while clamping to viewport bounds
     popupTag.textContent = section.tag;
     popupTitle.textContent = section.title;
     let copy = isPaused
@@ -604,10 +665,88 @@
     popup.classList.add("is-hidden");
   }
 
-  /*
+  function beginWarp() {
+    // Transition: intro -> warp
+    if (phase !== PHASE_INTRO) {
+      return;
+    }
+
+    phase = PHASE_WARP;
+    warpElapsed = 0;
+    hoveredBody = null;
+    pinnedBody = null;
+    dragState.active = false;
+    dragState.moved = false;
+    warpGroup.visible = true;
+    worldGroup.visible = false;
+    hidePopup();
+    if (warpIntro) {
+      warpIntro.classList.add("is-hidden");
+    }
+  }
+
+  function finishWarp() {
+    // Transition: warp -> main simulation
+    phase = PHASE_MAIN;
+    warpElapsed = 0;
+    warpGroup.visible = false;
+    worldGroup.visible = true;
+    camera.position.set(0, 0, BASE_CAMERA_Z);
+    camera.fov = BASE_CAMERA_FOV;
+    camera.updateProjectionMatrix();
+  }
+
+  function updateWarpField(dt) {
+    // Moves warp streaks toward camera; recycled streaks re-enter from deep Z
+    const posAttr = warpField.geometry.attributes.position;
+    const arr = posAttr.array;
+    const accel = Math.min(1, warpElapsed / (WARP_DURATION * 0.28));
+    const warpIntensity = 1.1 + accel * 6.2;
+
+    for (let i = 0; i < warpField.streakCount; i += 1) {
+      const i6 = i * 6;
+      let x = arr[i6];
+      let y = arr[i6 + 1];
+      let z = arr[i6 + 2];
+
+      z += warpField.speeds[i] * dt * warpIntensity;
+
+      if (z > 34) {
+        x = (Math.random() - 0.5) * 66;
+        y = (Math.random() - 0.5) * 42;
+        z = -250 - Math.random() * 80;
+      }
+
+      const tail = warpField.tailLengths[i] * (0.8 + warpIntensity * 0.78);
+
+      arr[i6] = x;
+      arr[i6 + 1] = y;
+      arr[i6 + 2] = z;
+      arr[i6 + 3] = x;
+      arr[i6 + 4] = y;
+      arr[i6 + 5] = z - tail;
+    }
+
+    posAttr.needsUpdate = true;
+
+    backgroundGroup.rotation.z += dt * 0.08;
+    backgroundGroup.rotation.y += dt * 0.05;
+    camera.position.z = BASE_CAMERA_Z - accel * 3.4;
+    camera.fov = BASE_CAMERA_FOV + accel * 23;
+    camera.updateProjectionMatrix();
+
+    if (warpElapsed >= WARP_DURATION) {
+      finishWarp();
+    }
+  }
 
   function updateHoverState() {
-    // Raycast against invisible hit spheres so interactions are forgiving.
+    // Raycast against invisible hit spheres so interactions are forgiving
+    if (phase !== PHASE_MAIN) {
+      hoveredBody = null;
+      return;
+    }
+
     raycaster.setFromCamera(pointer, camera);
     const intersections = raycaster.intersectObjects(hitAreas, false);
 
@@ -620,7 +759,11 @@
   }
 
   function onPointerDown(event) {
-    // Start drag rotation gesture.
+    // Start drag rotation gesture (main phase only)
+    if (phase !== PHASE_MAIN) {
+      return;
+    }
+
     dragState.active = true;
     dragState.moved = false;
     dragState.previousX = event.clientX;
@@ -628,18 +771,23 @@
   }
 
   function onPointerMove(event) {
+    // Always track pointer for popup placement; only rotate in main phase
     const rect = canvas.getBoundingClientRect();
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     pointerPx.x = event.clientX;
     pointerPx.y = event.clientY;
 
+    if (phase !== PHASE_MAIN) {
+      return;
+    }
+
     if (dragState.active) {
       const deltaX = event.clientX - dragState.previousX;
       const deltaY = event.clientY - dragState.previousY;
 
       if (Math.abs(deltaX) + Math.abs(deltaY) > 1.2) {
-        // Prevent accidental click-selection after a true drag.
+        // Prevent accidental click-selection after a true drag
         dragState.moved = true;
       }
 
@@ -661,7 +809,7 @@
   }
 
   function onPointerLeave() {
-    // Hide hover state when cursor exits canvas.
+    // Hide hover state when cursor exits canvas
     pointer.set(2, 2);
     hoveredBody = null;
     dragState.active = false;
@@ -672,7 +820,7 @@
   }
 
   function onClick() {
-    // Click = pin hovered body popup. Click empty space = unpin.
+    // Click = pin hovered body popup. Click empty space = unpin
     if (phase !== PHASE_MAIN) {
       return;
     }
@@ -692,12 +840,14 @@
     hidePopup();
   }
 
-
   canvas.addEventListener("pointerdown", onPointerDown);
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerleave", onPointerLeave);
   canvas.addEventListener("click", onClick);
   window.addEventListener("pointerup", onPointerUp);
+  if (warpStartBtn) {
+    warpStartBtn.addEventListener("click", beginWarp);
+  }
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -707,7 +857,7 @@
   });
 
   function resize() {
-    // Keep renderer/camera in sync with viewport.
+    // Keep renderer/camera in sync with viewport
     const width = window.innerWidth;
     const height = window.innerHeight;
     renderer.setSize(width, height, false);
@@ -721,46 +871,62 @@
   const clock = new THREE.Clock();
 
   function animate() {
-    // Three-body simulation + interactions (intro / warp / popups commented out).
+    // Single render loop with phase-based behavior:
+    // intro -> idle atmosphere
+    // warp -> streak animation
+    // main -> full physics + interactions
     const dt = Math.min(clock.getDelta(), 0.04);
     const elapsed = clock.elapsedTime;
 
     updateHoverState();
 
-    const isPaused = hoveredBody !== null;
-    if (!isPaused) {
-      integrateThreeBody(dt);
-    }
-    resonancePulse = Math.max(0, resonancePulse - dt * 0.95);
-
-    const activeBody = hoveredBody || pinnedBody;
-
-    for (const body of bodies) {
-      body.material.uniforms.uTime.value = elapsed * 1.2;
-      const isActive = activeBody && activeBody.id === body.id;
-      body.material.uniforms.uPointSize.value = (isActive ? 185 : 150) + resonancePulse * 36;
-      body.core.material.emissiveIntensity = (isActive ? 0.85 : 0.65) + resonancePulse * 0.7;
-
-      body.group.rotation.x += body.spin.x * dt;
-      body.group.rotation.y += body.spin.y * dt;
-      body.group.rotation.z += body.spin.z * dt;
-
-      const targetScale = (isActive ? 1.08 : 1) + resonancePulse * 0.09;
-      body.group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.14);
-    }
-
-    if (activeBody) {
-      showPopup(activeBody, pointerPx.x, pointerPx.y, hoveredBody !== null);
-    } else {
+    if (phase === PHASE_WARP) {
+      warpElapsed += dt;
+      updateWarpField(dt);
       hidePopup();
-    }
+      canvas.style.cursor = "default";
+    } else if (phase === PHASE_MAIN) {
+      const isPaused = hoveredBody !== null;
+      if (!isPaused) {
+        integrateThreeBody(dt);
+      }
+      resonancePulse = Math.max(0, resonancePulse - dt * 0.95);
 
-    if (dragState.active) {
-      canvas.style.cursor = "grabbing";
-    } else if (hoveredBody) {
-      canvas.style.cursor = "pointer";
+      const activeBody = hoveredBody || pinnedBody;
+
+      for (const body of bodies) {
+        // Body-local idle spin + active/near-collision visual emphasis
+        body.material.uniforms.uTime.value = elapsed * 1.2;
+        const isActive = activeBody && activeBody.id === body.id;
+        body.material.uniforms.uPointSize.value = (isActive ? 185 : 150) + resonancePulse * 36;
+        body.core.material.emissiveIntensity = (isActive ? 0.85 : 0.65) + resonancePulse * 0.7;
+
+        body.group.rotation.x += body.spin.x * dt;
+        body.group.rotation.y += body.spin.y * dt;
+        body.group.rotation.z += body.spin.z * dt;
+
+        const targetScale = (isActive ? 1.08 : 1) + resonancePulse * 0.09;
+        body.group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.14);
+      }
+
+      if (activeBody) {
+        showPopup(activeBody, pointerPx.x, pointerPx.y, hoveredBody !== null);
+      } else {
+        hidePopup();
+      }
+
+      if (dragState.active) {
+        canvas.style.cursor = "grabbing";
+      } else if (hoveredBody) {
+        canvas.style.cursor = "pointer";
+      } else {
+        canvas.style.cursor = "grab";
+      }
     } else {
-      canvas.style.cursor = "grab";
+      backgroundGroup.rotation.y += dt * 0.013;
+      backgroundGroup.rotation.x += dt * 0.006;
+      hidePopup();
+      canvas.style.cursor = "default";
     }
 
     renderer.render(scene, camera);
