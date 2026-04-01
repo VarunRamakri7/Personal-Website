@@ -19,17 +19,23 @@
 }
 
 html[data-theme="light"] {
-  /* Pastel eggshell + muted dark red type */
-  --color-bg: #6b3030;
-  --color-bg-elevated: #8f5f5f;
-  --color-text: #f4efe6;
-  --color-text-muted: #faf7f1;
-  --color-link: #ff6d6d;
-  --color-accent: #5c2828;
-  --color-border: rgba(107, 48, 48, 0.14);
-  --shadow-drawer: 0 0 50px rgba(107, 48, 48, 0.1);
-  --drawer-toolbar-divider: rgba(0, 0, 0, 0.06);
+  /* Geyser & Indigo — cool panel, blue type, navy frame */
+  --color-bg: #d8dfe2;
+  --color-bg-elevated: #cad6dc;
+  --color-text: #4f86c6;
+  --color-text-muted: #3d6ea8;
+  --color-link: #031628;
+  --color-accent: #031628;
+  --color-border: rgba(3, 22, 40, 0.14);
+  --shadow-drawer: 0 0 50px rgba(3, 22, 40, 0.12);
+  --drawer-toolbar-divider: rgba(3, 22, 40, 0.1);
   color-scheme: light;
+}
+
+html[data-theme="light"] body.page-home {
+  background:
+    radial-gradient(ellipse 95% 60% at 50% -8%, rgba(79, 134, 198, 0.1), transparent 58%),
+    var(--color-bg);
 }
 
 *,
@@ -218,7 +224,7 @@ img {
 }
 
 html[data-theme="light"] .backdrop {
-  background: rgba(92, 40, 40, 0.22);
+  background: rgba(3, 22, 40, 0.28);
 }
 
 /* Drawers — frosted glass + glossy edge (inset highlights read as 3D lens) */
@@ -391,7 +397,7 @@ html[data-theme="light"] .drawer--right {
 }
 
 html[data-theme="light"] .project-card__thumb {
-  background: #6b3030;
+  background: #031628;
 }
 
 .project-card__thumb img {
@@ -497,14 +503,14 @@ html[data-theme="light"] .project-card__thumb {
 }
 
 html[data-theme="light"] .theme-toggle {
-  border: 1px solid rgba(0, 0, 0, 0.35);
-  background: rgba(22, 22, 24, 0.94);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #f4efe6;
+  border: 1px solid rgba(3, 22, 40, 0.45);
+  background: rgba(3, 22, 40, 0.94);
+  box-shadow: 0 10px 40px rgba(3, 22, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #d8dfe2;
 }
 
 html[data-theme="light"] .theme-toggle:hover {
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 48px rgba(3, 22, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .theme-toggle__icon {
@@ -513,21 +519,21 @@ html[data-theme="light"] .theme-toggle:hover {
   justify-content: center;
 }
 
-/* Icons reflect current theme: moon on dark page, sun on light page. */
+/* Icons show the *target* theme (opposite of the page): sun on dark pages → light; moon on light pages → dark. */
 .theme-toggle__icon--sun {
-  display: none;
+  display: flex;
 }
 
 .theme-toggle__icon--moon {
-  display: flex;
+  display: none;
 }
 
 html[data-theme="light"] .theme-toggle__icon--sun {
-  display: flex;
+  display: none;
 }
 
 html[data-theme="light"] .theme-toggle__icon--moon {
-  display: none;
+  display: flex;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -546,7 +552,7 @@ html[data-theme="light"] .theme-toggle__icon--moon {
   --font-serif-paper: "Newsreader", "Georgia", "Times New Roman", serif;
   /* Masthead must track theme via the same scope as page tokens (see html[data-theme="light"] .page-resume). */
   --resume-topbar-bg: rgba(18, 18, 18, 0.92);
-  /* Newspaper hairlines: fixed white so theme does not change divider appearance. */
+  /* Hairlines: light on dark page (black would disappear on charcoal). */
   --resume-rule: rgba(255, 255, 255, 0.5);
   margin: 0;
   min-height: 100vh;
@@ -560,7 +566,39 @@ html[data-theme="light"] .theme-toggle__icon--moon {
 }
 
 html[data-theme="light"] .page-resume {
-  --resume-topbar-bg: rgba(165, 63, 38, 0.95);
+  /* Indigo masthead frame; body copy uses global Geyser + blue from tokens */
+  --resume-topbar-bg: rgba(3, 22, 40, 0.96);
+  /* Article / card borders: black on Geyser for clear contrast */
+  --resume-rule: rgba(0, 0, 0, 0.55);
+  background:
+    radial-gradient(ellipse 100% 55% at 50% 0%, rgba(79, 134, 198, 0.09), transparent 56%),
+    var(--color-bg);
+}
+
+/* Resume masthead sits on indigo — use pale Geyser-tinted text (not panel blue) */
+html[data-theme="light"] .resume-topbar {
+  color: #d8dfe2;
+  /* Masthead hairlines stay light on navy (black would not read here) */
+  --resume-rule: rgba(255, 255, 255, 0.5);
+}
+
+html[data-theme="light"] .resume-topbar .resume-masthead__tagline,
+html[data-theme="light"] .resume-topbar .resume-masthead__title {
+  color: #e8eef1;
+}
+
+html[data-theme="light"] .resume-topbar .resume-masthead__date,
+html[data-theme="light"] .resume-topbar .resume-masthead__sub,
+html[data-theme="light"] .resume-topbar .resume-back {
+  color: rgba(216, 223, 226, 0.85);
+}
+
+html[data-theme="light"] .resume-topbar .resume-masthead__kicker {
+  color: #7eb8e8;
+}
+
+html[data-theme="light"] .resume-topbar .resume-back:hover {
+  color: #ffffff;
 }
 
 .page-resume .resume-skip {
