@@ -133,7 +133,7 @@
 
   function lineColor() {
     var light = document.documentElement.getAttribute("data-theme") === "light";
-    return light ? "rgba(79, 134, 198, 0.24)" : "rgba(147, 197, 253, 0.18)";
+    return light ? "rgba(79, 134, 198, 0.24)" : "rgba(224, 215, 48, 0.16)";
   }
 
   function resize() {

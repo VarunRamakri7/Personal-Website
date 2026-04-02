@@ -1,18 +1,19 @@
 /* === Design tokens === */
 :root {
-  --color-bg: #121212;
-  --color-bg-elevated: #1a1a1c;
-  --color-text: #fafafa;
-  --color-text-muted: #a3a3a3;
-  --color-link: #93c5fd;
-  --color-accent: #e5e5e5;
-  --color-border: rgba(255, 255, 255, 0.08);
+  /* Fiord & Pear — dark (primary text on background ≈ WCAG AA 5.3:1) */
+  --color-bg: #465166;
+  --color-bg-elevated: #505c73;
+  --color-text: #e0d730;
+  --color-text-muted: rgba(224, 215, 48, 0.72);
+  --color-link: #e0d730;
+  --color-accent: #e0d730;
+  --color-border: rgba(224, 215, 48, 0.14);
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-gothic: "UnifrakturMaguntia", "Times New Roman", serif;
   --font-display: var(--font-sans);
   --radius-drawer: 20px;
-  --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.55);
-  --drawer-toolbar-divider: rgba(255, 255, 255, 0.035);
+  --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.45);
+  --drawer-toolbar-divider: rgba(224, 215, 48, 0.1);
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
   color-scheme: dark;
@@ -413,7 +414,7 @@ html[data-theme="light"] .drawer--right {
   height: 100px;
   border-radius: 8px;
   overflow: hidden;
-  background: #2a2a2e;
+  background: #3a4154;
   border: 1px solid var(--color-border);
 }
 
