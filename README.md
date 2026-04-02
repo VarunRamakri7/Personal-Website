@@ -4,10 +4,8 @@ Static personal site: minimal typography-led home, slide-out **Projects** and **
 
 ## What’s on the site
 
-- **Home (`index.html`)** — Centered hero (blackletter name + sans-serif lines). Top row: **Projects** / **Information** open left and right drawers; **Email** / **Instagram** / **LinkedIn** are links. Former portfolio items (résumé page, GitHub, War Smith) live in the Projects drawer.
+- **Home (`index.html`)** — Centered hero (blackletter name + sans-serif lines). Top row: **Projects** / **Information** open left and right drawers; **Email** / **Instagram** / **LinkedIn** are links. Former portfolio items live in the Projects drawer.
 - **Resume (`inner/Resume.html`)** — Standalone résumé; shares `assets/css/main.css` and `theme.js`.
-
-No build step is required; open the files or serve the folder locally.
 
 ## Tech stack
 
