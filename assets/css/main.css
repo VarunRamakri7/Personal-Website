@@ -427,6 +427,16 @@ html[data-theme="light"] .project-card__thumb {
   object-fit: cover;
 }
 
+/* GitHub thumbnail is authored for light UI; invert in dark mode only */
+.project-card__thumb--github img {
+  filter: invert(1);
+  transition: filter var(--transition-fast);
+}
+
+html[data-theme="light"] .project-card__thumb--github img {
+  filter: none;
+}
+
 .project-card__title {
   margin: 0 0 8px;
   font-size: 1.05rem;
