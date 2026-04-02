@@ -1173,6 +1173,7 @@ html.has-cursor-invert {
   }
 
   html.has-cursor-invert body.drawer-active a[href],
+  html.has-cursor-invert body.drawer-active a[href] *,
   html.has-cursor-invert body.drawer-active button,
   html.has-cursor-invert body.drawer-active [type="button"],
   html.has-cursor-invert body.drawer-active [type="submit"],
