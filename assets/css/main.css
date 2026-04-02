@@ -1112,7 +1112,49 @@ html[data-theme="light"] .page-resume .resume-profile .resume-photo-wrap::after 
   margin-bottom: 0;
 }
 
+/* --- Custom cursor: circular lens inverts colors beneath (fine pointers only) --- */
+html.has-cursor-invert {
+  --cursor-invert-radius: 100px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor-invert,
+  html.has-cursor-invert * {
+    cursor: none !important;
+  }
+
+  .cursor-invert {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10060;
+    width: calc(var(--cursor-invert-radius) * 2);
+    height: calc(var(--cursor-invert-radius) * 2);
+    margin-left: calc(var(--cursor-invert-radius) * -1);
+    margin-top: calc(var(--cursor-invert-radius) * -1);
+    border-radius: 50%;
+    background: #fff;
+    mix-blend-mode: difference;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+
+  .cursor-invert.cursor-invert--on {
+    opacity: 1;
+  }
+}
+
 @media print {
+  html.has-cursor-invert,
+  html.has-cursor-invert * {
+    cursor: auto !important;
+  }
+
+  .cursor-invert {
+    display: none !important;
+  }
+
   .resume-topbar,
   .resume-skip,
   .theme-toggle {
