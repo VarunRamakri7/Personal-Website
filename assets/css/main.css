@@ -1117,9 +1117,26 @@ html.has-cursor-invert {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  /* Default: hide system cursor; interactive elements restore pointer/text so hit targets behave normally. */
   html.has-cursor-invert,
   html.has-cursor-invert * {
     cursor: none !important;
+  }
+
+  html.has-cursor-invert a[href],
+  html.has-cursor-invert button,
+  html.has-cursor-invert [type="button"],
+  html.has-cursor-invert [type="submit"],
+  html.has-cursor-invert [role="button"],
+  html.has-cursor-invert label[for],
+  html.has-cursor-invert select,
+  html.has-cursor-invert summary {
+    cursor: pointer !important;
+  }
+
+  html.has-cursor-invert input:not([type="hidden"]),
+  html.has-cursor-invert textarea {
+    cursor: text !important;
   }
 
   .cursor-invert {
@@ -1129,18 +1146,46 @@ html.has-cursor-invert {
     z-index: 10060;
     width: calc(var(--cursor-invert-radius) * 2);
     height: calc(var(--cursor-invert-radius) * 2);
-    margin-left: calc(var(--cursor-invert-radius) * -1);
-    margin-top: calc(var(--cursor-invert-radius) * -1);
     border-radius: 50%;
     background: #fff;
     mix-blend-mode: difference;
-    pointer-events: none;
+    pointer-events: none !important;
+    user-select: none;
     opacity: 0;
-    transition: opacity 0.12s ease;
+    transition: opacity 0.2s ease;
+    /* Do not capture hits; events reach elements below across the full lens area. */
   }
 
   .cursor-invert.cursor-invert--on {
     opacity: 1;
+  }
+
+  /* Drawers open: hide only the invert lens; normal OS cursor returns (not cursor: none). */
+  body.drawer-active .cursor-invert {
+    opacity: 0 !important;
+    transition: opacity 0.22s ease;
+  }
+
+  /* Drawers open: default arrow everywhere (incl. dock padding / empty flex space); revert can fail there. */
+  html.has-cursor-invert body.drawer-active,
+  html.has-cursor-invert body.drawer-active * {
+    cursor: auto !important;
+  }
+
+  html.has-cursor-invert body.drawer-active a[href],
+  html.has-cursor-invert body.drawer-active button,
+  html.has-cursor-invert body.drawer-active [type="button"],
+  html.has-cursor-invert body.drawer-active [type="submit"],
+  html.has-cursor-invert body.drawer-active [role="button"],
+  html.has-cursor-invert body.drawer-active label[for],
+  html.has-cursor-invert body.drawer-active select,
+  html.has-cursor-invert body.drawer-active summary {
+    cursor: pointer !important;
+  }
+
+  html.has-cursor-invert body.drawer-active input:not([type="hidden"]),
+  html.has-cursor-invert body.drawer-active textarea {
+    cursor: text !important;
   }
 }
 

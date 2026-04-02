@@ -24,6 +24,8 @@
     onMove = function (e) {
       el.style.left = e.clientX + "px";
       el.style.top = e.clientY + "px";
+      /* Center lens on pointer so hit-testing matches the visual (not top-left of the circle). */
+      el.style.transform = "translate(-50%, -50%)";
       el.classList.add("cursor-invert--on");
     };
 
