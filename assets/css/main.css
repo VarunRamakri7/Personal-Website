@@ -12,6 +12,8 @@
   --font-gothic: "UnifrakturMaguntia", "Times New Roman", serif;
   --font-display: var(--font-sans);
   --radius-drawer: 20px;
+  --drawer-dock-inset: clamp(12px, 2.5vw, 24px);
+  --drawer-max-height: min(85vh, 720px);
   --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.45);
   --drawer-toolbar-divider: rgba(224, 215, 48, 0.1);
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
@@ -249,22 +251,27 @@ html[data-theme="light"] .backdrop {
   background: rgba(3, 22, 40, 0.28);
 }
 
-/* Drawers — frosted glass + glossy edge (inset highlights read as 3D lens) */
+/* Drawers — floating docks: height follows content up to --drawer-max-height, then scroll */
 .drawer {
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: 50%;
+  bottom: auto;
   z-index: 200;
-  width: min(100%, 560px);
-  max-width: 96vw;
+  width: min(560px, calc(100vw - 2 * var(--drawer-dock-inset)));
+  height: fit-content;
+  max-height: var(--drawer-max-height);
+  min-height: 0;
+  overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 22%, transparent 42%),
     color-mix(in srgb, var(--color-bg-elevated) 65%, transparent);
   -webkit-backdrop-filter: blur(40px) saturate(1.2);
   backdrop-filter: blur(40px) saturate(1.2);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-drawer);
   box-shadow:
     var(--shadow-drawer),
+    0 24px 48px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset,
     inset 0 1px 0 rgba(255, 255, 255, 0.28),
     inset 0 -1px 0 rgba(0, 0, 0, 0.45);
@@ -280,64 +287,28 @@ html[data-theme="light"] .drawer {
   border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
     var(--shadow-drawer),
+    0 24px 48px rgba(3, 22, 40, 0.18),
     0 0 0 1px rgba(255, 255, 255, 0.18) inset,
     inset 0 1px 0 rgba(255, 255, 255, 0.55),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
-html[data-theme="light"] .drawer--left {
-  box-shadow:
-    var(--shadow-drawer),
-    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
-    inset -1px 0 0 rgba(255, 255, 255, 0.22);
-}
-
-html[data-theme="light"] .drawer--right {
-  box-shadow:
-    var(--shadow-drawer),
-    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
-    inset 1px 0 0 rgba(255, 255, 255, 0.22);
-}
-
 .drawer--left {
-  left: 0;
-  transform: translateX(-105%);
-  border-left: none;
-  border-top-right-radius: var(--radius-drawer);
-  border-bottom-right-radius: var(--radius-drawer);
-  /* Inner vertical edge (toward page) — specular highlight */
-  box-shadow:
-    var(--shadow-drawer),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
-    inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  left: var(--drawer-dock-inset);
+  transform: translate(calc(-100% - var(--drawer-dock-inset)), -50%);
 }
 
 .drawer--left.drawer--open {
-  transform: translateX(0);
+  transform: translate(0, -50%);
 }
 
 .drawer--right {
-  right: 0;
-  transform: translateX(105%);
-  border-right: none;
-  border-top-left-radius: var(--radius-drawer);
-  border-bottom-left-radius: var(--radius-drawer);
-  box-shadow:
-    var(--shadow-drawer),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
-    inset 1px 0 0 rgba(255, 255, 255, 0.1);
+  right: var(--drawer-dock-inset);
+  transform: translate(calc(100% + var(--drawer-dock-inset)), -50%);
 }
 
 .drawer--right.drawer--open {
-  transform: translateX(0);
+  transform: translate(0, -50%);
 }
 
 .drawer__toolbar {
@@ -364,19 +335,19 @@ html[data-theme="light"] .drawer--right {
 }
 
 .drawer__body {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-}
-
-.drawer__body--scroll {
+  overflow-x: hidden;
   overflow-y: auto;
-  padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 28px) 40px;
   -webkit-overflow-scrolling: touch;
 }
 
+.drawer__body--scroll {
+  padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 28px) clamp(24px, 4vw, 40px);
+}
+
 .drawer__body--info {
-  padding: clamp(12px, 2vw, 20px) clamp(24px, 5vw, 40px) 48px;
-  overflow-y: auto;
+  padding: clamp(12px, 2vw, 20px) clamp(24px, 5vw, 40px) clamp(28px, 4vw, 44px);
 }
 
 /* Project list (from former portfolio) */
