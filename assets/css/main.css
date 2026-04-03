@@ -16,7 +16,7 @@
   --drawer-max-height: min(85vh, 720px);
   --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.45);
   /* Full-screen scrim when docks open — light blur only (heavy blur was flattening the hero canvas) */
-  --drawer-scrim-blur: 5px;
+  --drawer-scrim-blur: 56%;
   --drawer-toolbar-divider: rgba(224, 215, 48, 0.12);
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
@@ -209,6 +209,30 @@ body.drawer-active--information #btn-information.text-btn {
   z-index: 1;
 }
 
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(1.25rem, 4vh, 2.5rem);
+}
+
+/* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
+#hero-magnifier-source.hero-magnifier-source--masked {
+  -webkit-mask-image: radial-gradient(
+    circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
+    rgba(255, 255, 255, 0) 91px,
+    rgba(255, 255, 255, 1) 92.5px
+  );
+  mask-image: radial-gradient(
+    circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
+    rgba(255, 255, 255, 0) 91px,
+    rgba(255, 255, 255, 1) 92.5px
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 .hero__name {
   margin: 0;
   font-family: var(--font-gothic);
@@ -263,6 +287,103 @@ body.drawer-active--information #btn-information.text-btn {
 
   .page-home .hero__line--secondary {
     animation: hero-content-in 0.65s 0.16s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
+/* Hero magnifier clone (outside .hero) — match landing typography + theme tokens */
+.hero-magnifier-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.hero-magnifier {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10059;
+  width: 184px;
+  height: 184px;
+  margin: 0;
+  padding: 0;
+  pointer-events: none !important;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  contain: layout paint;
+}
+
+.hero-magnifier.hero-magnifier--on {
+  opacity: 1;
+}
+
+body.drawer-active .hero-magnifier {
+  opacity: 0 !important;
+}
+
+.hero-magnifier__viewport {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  filter: url(#hero-magnifier-lens);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 0 24px rgba(255, 255, 255, 0.06),
+    0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.hero-magnifier__sheet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.hero-magnifier .hero__text {
+  gap: clamp(1.25rem, 4vh, 2.5rem);
+}
+
+.hero-magnifier .hero__name {
+  margin: 0;
+  font-family: var(--font-gothic);
+  font-size: clamp(2.5rem, 8vw + 1rem, 5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  max-width: 20ch;
+  color: var(--color-text);
+}
+
+.hero-magnifier .hero__line {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  max-width: 32ch;
+  color: var(--color-text);
+}
+
+.hero-magnifier .hero__line--primary {
+  font-size: clamp(1.25rem, 2.5vw + 0.75rem, 2rem);
+}
+
+.hero-magnifier .hero__line--secondary {
+  font-size: clamp(0.95rem, 1.2vw + 0.75rem, 1.125rem);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+/* Slight edge chromatic fringing (lens), not applied to blend lens above */
+.hero-magnifier__clone {
+  text-shadow:
+    0.4px 0 0 rgba(255, 100, 120, 0.22),
+    -0.4px 0 0 rgba(80, 200, 255, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-magnifier {
+    display: none !important;
   }
 }
 
@@ -1319,7 +1440,9 @@ html.has-cursor-invert {
     cursor: auto !important;
   }
 
-  .cursor-invert {
+  .cursor-invert,
+  .hero-magnifier,
+  .hero-magnifier-filters {
     display: none !important;
   }
 
