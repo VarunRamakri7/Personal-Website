@@ -290,8 +290,16 @@
     destroy();
   }
 
+  function isUserEnabled() {
+    try {
+      return localStorage.getItem("site-effect-hero-magnifier") !== "0";
+    } catch (e) {
+      return true;
+    }
+  }
+
   function sync() {
-    if (mq.matches && !reducedMotion) {
+    if (mq.matches && !reducedMotion && isUserEnabled()) {
       enable();
     } else {
       disable();
@@ -304,4 +312,8 @@
   } else if (typeof mq.addListener === "function") {
     mq.addListener(sync);
   }
+  window.addEventListener("site-effects-changed", sync);
+  window.addEventListener("storage", function (e) {
+    if (e.key === "site-effect-hero-magnifier") sync();
+  });
 })();
