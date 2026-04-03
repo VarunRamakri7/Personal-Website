@@ -7,9 +7,19 @@
   var KEY_CURSOR = "site-effect-cursor-invert";
   var KEY_MAGNIFIER = "site-effect-hero-magnifier";
 
-  function read(key) {
+  /** Inversion: opt-in (default off). */
+  function readCursorInvert() {
     try {
-      return localStorage.getItem(key) !== "0";
+      return localStorage.getItem(KEY_CURSOR) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /** Magnifier: opt-out (default on). */
+  function readMagnifier() {
+    try {
+      return localStorage.getItem(KEY_MAGNIFIER) !== "0";
     } catch (e) {
       return true;
     }
@@ -26,12 +36,12 @@
     var inv = document.getElementById("effect-toggle-cursor-invert");
     var mag = document.getElementById("effect-toggle-hero-magnifier");
     if (inv) {
-      var on = read(KEY_CURSOR);
+      var on = readCursorInvert();
       inv.setAttribute("aria-pressed", on ? "true" : "false");
       inv.classList.toggle("theme-effect-toggle--off", !on);
     }
     if (mag) {
-      var on2 = read(KEY_MAGNIFIER);
+      var on2 = readMagnifier();
       mag.setAttribute("aria-pressed", on2 ? "true" : "false");
       mag.classList.toggle("theme-effect-toggle--off", !on2);
     }
@@ -45,13 +55,13 @@
     if (inv) {
       inv.addEventListener("click", function (e) {
         e.stopPropagation();
-        write(KEY_CURSOR, !read(KEY_CURSOR));
+        write(KEY_CURSOR, !readCursorInvert());
       });
     }
     if (mag) {
       mag.addEventListener("click", function (e) {
         e.stopPropagation();
-        write(KEY_MAGNIFIER, !read(KEY_MAGNIFIER));
+        write(KEY_MAGNIFIER, !readMagnifier());
       });
     }
 

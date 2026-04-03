@@ -59,9 +59,9 @@
 
   function isUserEnabled() {
     try {
-      return localStorage.getItem("site-effect-cursor-invert") !== "0";
+      return localStorage.getItem("site-effect-cursor-invert") === "1";
     } catch (e) {
-      return true;
+      return false;
     }
   }
 

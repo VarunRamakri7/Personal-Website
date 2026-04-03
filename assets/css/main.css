@@ -16,7 +16,7 @@
   --drawer-max-height: min(85vh, 720px);
   --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.45);
   /* Full-screen scrim when docks open — light blur only (heavy blur was flattening the hero canvas) */
-  --drawer-scrim-blur: 56%;
+  --drawer-scrim-blur: 5px;
   --drawer-toolbar-divider: rgba(224, 215, 48, 0.12);
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
@@ -318,12 +318,6 @@ body.drawer-active--information #btn-information.text-btn {
   /* Clip the whole stack to a circle: SVG filter output can show a square tile when nothing sits above (e.g. inversion off). */
   border-radius: 50%;
   overflow: hidden;
-  /* Glass shading (updated from JS): light from top-right, parallax from pointer */
-  --mag-spec-x: 72%;
-  --mag-spec-y: 26%;
-  --mag-shade-x: 28%;
-  --mag-shade-y: 74%;
-  --mag-light-angle: -46;
 }
 
 .hero-magnifier.hero-magnifier--on {
@@ -349,7 +343,7 @@ body.drawer-active .hero-magnifier {
     0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* Glass rim + shading (not inside SVG filter); positions track --mag-* from JS (top-right light + parallax) */
+/* Glass rim + shading (not inside SVG filter); dark + light variants — light from upper-left */
 .hero-magnifier::after {
   content: "";
   position: absolute;
@@ -358,54 +352,37 @@ body.drawer-active .hero-magnifier {
   border-radius: 50%;
   pointer-events: none;
   display: block;
-  transition:
-    background 0.12s ease,
-    box-shadow 0.12s ease;
   background:
-    radial-gradient(
-      ellipse 90% 50% at var(--mag-spec-x, 72%) var(--mag-spec-y, 26%),
-      rgba(255, 255, 255, 0.42) 0%,
-      transparent 52%
-    ),
-    radial-gradient(
-      ellipse 110% 70% at var(--mag-shade-x, 28%) var(--mag-shade-y, 74%),
-      rgba(0, 0, 0, 0.38) 0%,
-      transparent 48%
-    ),
+    radial-gradient(ellipse 78% 48% at 28% 22%, rgba(255, 255, 255, 0.48) 0%, transparent 54%),
+    radial-gradient(ellipse 100% 72% at 72% 118%, rgba(0, 0, 0, 0.42) 0%, transparent 50%),
     linear-gradient(
-      calc(var(--mag-light-angle, -46) * 1deg),
-      rgba(255, 255, 255, 0.18) 0%,
-      transparent 42%,
-      rgba(0, 0, 0, 0.22) 100%
+      210deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 38%,
+      rgba(0, 0, 0, 0.18) 72%,
+      rgba(0, 0, 0, 0.26) 100%
     );
   box-shadow:
     inset 0 0 0 1.5px rgba(255, 255, 255, 0.34),
-    inset 0 2px 14px rgba(255, 255, 255, 0.16),
-    inset 0 -12px 28px rgba(0, 0, 0, 0.4);
+    inset 8px 10px 18px rgba(255, 255, 255, 0.18),
+    inset -10px -14px 30px rgba(0, 0, 0, 0.42);
 }
 
 html[data-theme="light"] .hero-magnifier::after {
   background:
-    radial-gradient(
-      ellipse 90% 50% at var(--mag-spec-x, 72%) var(--mag-spec-y, 26%),
-      rgba(255, 255, 255, 0.55) 0%,
-      transparent 52%
-    ),
-    radial-gradient(
-      ellipse 110% 70% at var(--mag-shade-x, 28%) var(--mag-shade-y, 74%),
-      rgba(3, 22, 40, 0.12) 0%,
-      transparent 48%
-    ),
+    radial-gradient(ellipse 78% 48% at 28% 22%, rgba(255, 255, 255, 0.58) 0%, transparent 54%),
+    radial-gradient(ellipse 100% 72% at 72% 118%, rgba(3, 22, 40, 0.14) 0%, transparent 50%),
     linear-gradient(
-      calc(var(--mag-light-angle, -46) * 1deg),
-      rgba(255, 255, 255, 0.22) 0%,
-      transparent 42%,
-      rgba(3, 22, 40, 0.05) 100%
+      210deg,
+      rgba(255, 255, 255, 0.26) 0%,
+      transparent 38%,
+      rgba(3, 22, 40, 0.06) 72%,
+      rgba(3, 22, 40, 0.1) 100%
     );
   box-shadow:
     inset 0 0 0 1.5px rgba(3, 22, 40, 0.38),
-    inset 0 2px 12px rgba(255, 255, 255, 0.55),
-    inset 0 -10px 24px rgba(3, 22, 40, 0.1);
+    inset 7px 9px 16px rgba(255, 255, 255, 0.52),
+    inset -9px -12px 26px rgba(3, 22, 40, 0.12);
 }
 
 html[data-theme="light"] .hero-magnifier__viewport {
