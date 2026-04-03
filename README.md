@@ -5,7 +5,7 @@ Static personal site: minimal typography-led home, slide-out **Projects** and **
 ## What’s on the site
 
 - **Home (`index.html`)** — Centered hero (blackletter name + sans-serif lines). Background: animated wireframe icosahedra on canvas. Top row: **Projects** / **Information** open left and right drawers; **Email** / **Instagram** / **LinkedIn** are links. Former portfolio items live in the Projects drawer. Floating controls: **theme** (bottom-right) and **effect toggles** (appear on hover) for cursor inversion and hero magnifier.
-- **Resume (`inner/Resume.html`)** — Standalone résumé; shares `assets/css/main.css`, `theme.js`, and `effects-ui.js`.
+- **Resume (`inner/Resume.html`)** — Standalone résumé; shares `assets/css/main.css` and `theme.js` (no cursor-effect toggles; those are home-only).
 
 ## Tech stack
 
