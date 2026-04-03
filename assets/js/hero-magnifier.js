@@ -1,5 +1,5 @@
 /**
- * Magnifying glass over hero landing text only. Renders below #cursor-invert (mix-blend unchanged).
+ * Magnifying glass over the landing area (nav + hero). Renders below #cursor-invert (mix-blend unchanged).
  */
 (function () {
   "use strict";
@@ -30,6 +30,7 @@
   var pending = null;
   var lastX = 0;
   var lastY = 0;
+  var canvasSyncRaf = 0;
 
   function build() {
     if (root) return;
@@ -49,6 +50,7 @@
     cloneRoot.removeAttribute("id");
     cloneRoot.setAttribute("aria-hidden", "true");
     cloneRoot.className = source.className + " hero-magnifier__clone";
+    stripCloneIds();
 
     sheet.appendChild(cloneRoot);
     viewport.appendChild(sheet);
@@ -58,7 +60,15 @@
     source.style.setProperty("--hero-magnifier-r", R + "px");
   }
 
+  function stripCloneIds() {
+    if (!cloneRoot) return;
+    cloneRoot.querySelectorAll("[id]").forEach(function (el) {
+      el.removeAttribute("id");
+    });
+  }
+
   function destroy() {
+    stopCanvasSyncLoop();
     if (root && root.parentNode) {
       root.parentNode.removeChild(root);
     }
@@ -68,6 +78,43 @@
   function syncCloneFromSource() {
     if (!cloneRoot || !source) return;
     cloneRoot.innerHTML = source.innerHTML;
+    stripCloneIds();
+    syncCloneCanvas();
+  }
+
+  function syncCloneCanvas() {
+    if (!cloneRoot || !source) return;
+    var orig = source.querySelector(".hero__spheres-canvas");
+    var clone = cloneRoot.querySelector(".hero__spheres-canvas");
+    if (!orig || !clone) return;
+    if (clone.width !== orig.width || clone.height !== orig.height) {
+      clone.width = orig.width;
+      clone.height = orig.height;
+    }
+    var cctx = clone.getContext("2d");
+    if (!cctx) return;
+    cctx.setTransform(1, 0, 0, 1, 0, 0);
+    cctx.drawImage(orig, 0, 0);
+  }
+
+  function startCanvasSyncLoop() {
+    if (canvasSyncRaf) return;
+    function tick() {
+      syncCloneCanvas();
+      if (root && root.classList.contains("hero-magnifier--on")) {
+        canvasSyncRaf = requestAnimationFrame(tick);
+      } else {
+        canvasSyncRaf = 0;
+      }
+    }
+    canvasSyncRaf = requestAnimationFrame(tick);
+  }
+
+  function stopCanvasSyncLoop() {
+    if (canvasSyncRaf) {
+      cancelAnimationFrame(canvasSyncRaf);
+      canvasSyncRaf = 0;
+    }
   }
 
   function clearSourceMask() {
@@ -90,6 +137,7 @@
     if (rect.width < 4 || rect.height < 4) {
       root.classList.remove("hero-magnifier--on");
       clearSourceMask();
+      stopCanvasSyncLoop();
       return;
     }
 
@@ -108,6 +156,8 @@
 
     root.classList.add("hero-magnifier--on");
     applySourceMask(mx, my);
+    syncCloneCanvas();
+    startCanvasSyncLoop();
   }
 
   function frame() {
@@ -120,6 +170,7 @@
     if (document.body.classList.contains("drawer-active")) {
       if (root) root.classList.remove("hero-magnifier--on");
       clearSourceMask();
+      stopCanvasSyncLoop();
       return;
     }
 
@@ -133,6 +184,7 @@
     if (!over) {
       if (root) root.classList.remove("hero-magnifier--on");
       clearSourceMask();
+      stopCanvasSyncLoop();
       return;
     }
 
@@ -171,24 +223,16 @@
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", onResize);
-    source.addEventListener("mouseleave", onSourceLeave);
     new MutationObserver(function () {
       syncCloneFromSource();
     }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  }
-
-  function onSourceLeave() {
-    clearSourceMask();
-    if (root) root.classList.remove("hero-magnifier--on");
   }
 
   function disable() {
     window.removeEventListener("mousemove", onMove);
     window.removeEventListener("scroll", onScroll, true);
     window.removeEventListener("resize", onResize);
-    if (source) {
-      source.removeEventListener("mouseleave", onSourceLeave);
-    }
+    stopCanvasSyncLoop();
     clearSourceMask();
     destroy();
   }

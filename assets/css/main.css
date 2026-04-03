@@ -177,6 +177,12 @@ body.drawer-active--information #btn-information.text-btn {
 }
 
 /* Hero */
+/* Wraps fixed nav + hero for the magnifier source/clone (full landing hit area). */
+.landing-magnifier-root {
+  width: 100%;
+  min-height: 100vh;
+}
+
 .hero {
   position: relative;
   isolation: isolate;
@@ -217,7 +223,7 @@ body.drawer-active--information #btn-information.text-btn {
   gap: clamp(1.25rem, 4vh, 2.5rem);
 }
 
-/* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
+/* Hide landing content under the magnifier lens only (clone shows zoomed pixels there). */
 #hero-magnifier-source.hero-magnifier-source--masked {
   -webkit-mask-image: radial-gradient(
     circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
