@@ -119,15 +119,159 @@
     return mulMat(rotZ(rz), mulMat(rotY(ry), rotX(rx)));
   }
 
-  /* nx, ny: normalized anchor (-0.5..0.5 from center); r: relative radius; s*: rad/s; o*: phase */
-  var spheres = [
-    { nx: 0.1, ny: -0.06, r: 0.44, srx: 0.33, sry: 0.41, srz: 0.29, ox: 0.4, oy: 0.9, oz: 0.5 },
-    { nx: -0.32, ny: 0.2, r: 0.37, srx: -0.24, sry: 0.52, srz: 0.21, ox: 2.1, oy: 0.7, oz: 1.5 },
-    { nx: 0.36, ny: 0.3, r: 0.34, srx: 0.44, sry: -0.28, srz: 0.35, ox: 0.8, oy: 2.0, oz: 0.55 },
-    { nx: -0.12, ny: -0.36, r: 0.49, srx: 0.2, sry: 0.36, srz: -0.42, ox: 2.9, oy: 2.2, oz: 1.1 },
-    { nx: 0.4, ny: -0.26, r: 0.32, srx: -0.37, sry: 0.23, srz: 0.4, ox: 4.2, oy: 1.2, oz: 2.6 },
-    { nx: -0.4, ny: 0.04, r: 0.45, srx: 0.29, sry: -0.4, srz: 0.24, ox: 5.0, oy: 3.4, oz: 0.85 },
-  ];
+  /* nx, ny: offset from canvas center (× w/h); r: scale factor; filled by generateSpheres */
+  var spheres = [];
+  var sphereGenW = 0;
+  var sphereGenH = 0;
+
+  var TARGET_COUNT = 6;
+  /** Keep icosahedra inset from edges (fraction of half-width / half-height). */
+  var EDGE_MARGIN = 0.07;
+  /** Min separation between centers in px — scales with projected mesh size. */
+  function minCenterSeparationPx(r1, r2, w, h) {
+    var scale = Math.min(w, h) * 0.45;
+    return 0.5 * (r1 + r2) * scale;
+  }
+
+  function centerPx(sp, w, h) {
+    return [w * (0.5 + sp.nx), h * (0.5 + sp.ny)];
+  }
+
+  function distPx(a, b, w, h) {
+    var ca = centerPx(a, w, h);
+    var cb = centerPx(b, w, h);
+    return Math.hypot(ca[0] - cb[0], ca[1] - cb[1]);
+  }
+
+  /**
+   * Random non-overlacing placements; rejects samples that are too close in screen space.
+   * Falls back to a jittered hex-ish grid if rejection sampling stalls.
+   */
+  function generateSpheres(w, h) {
+    var placed = [];
+    var maxAttempts = 900;
+    var attempts = 0;
+    var halfInset = 0.5 - EDGE_MARGIN;
+
+    while (placed.length < TARGET_COUNT && attempts < maxAttempts) {
+      attempts++;
+      var r = 0.3 + Math.random() * 0.2;
+      var nx = (Math.random() - 0.5) * 2 * halfInset;
+      var ny = (Math.random() - 0.5) * 2 * halfInset;
+      var candidate = { nx: nx, ny: ny, r: r };
+      var ok = true;
+      for (var i = 0; i < placed.length; i++) {
+        if (distPx(candidate, placed[i], w, h) < minCenterSeparationPx(r, placed[i].r, w, h)) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) {
+        placed.push({
+          nx: nx,
+          ny: ny,
+          r: r,
+          srx: (Math.random() - 0.5) * 0.92,
+          sry: (Math.random() - 0.5) * 0.92,
+          srz: (Math.random() - 0.5) * 0.92,
+          ox: Math.random() * Math.PI * 2,
+          oy: Math.random() * Math.PI * 2,
+          oz: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    /* Grid fallback: deterministic slots around the hero so we always show TARGET_COUNT */
+    if (placed.length < TARGET_COUNT) {
+      var slots = [
+        { nx: -0.34, ny: -0.28 },
+        { nx: 0.34, ny: -0.22 },
+        { nx: -0.28, ny: 0.32 },
+        { nx: 0.3, ny: 0.28 },
+        { nx: 0, ny: -0.38 },
+        { nx: -0.38, ny: 0.08 },
+        { nx: 0.38, ny: 0.06 },
+        { nx: 0, ny: 0.36 },
+      ];
+      var rs = [0.36, 0.38, 0.34, 0.4, 0.33, 0.37];
+      for (var s = 0; s < slots.length && placed.length < TARGET_COUNT; s++) {
+        var jitter = 0.04;
+        var cand = {
+          nx: slots[s].nx + (Math.random() - 0.5) * jitter,
+          ny: slots[s].ny + (Math.random() - 0.5) * jitter,
+          r: rs[placed.length % rs.length],
+        };
+        if (Math.abs(cand.nx) > halfInset - 0.02) cand.nx *= 0.92;
+        if (Math.abs(cand.ny) > halfInset - 0.02) cand.ny *= 0.92;
+        var clash = false;
+        for (var j = 0; j < placed.length; j++) {
+          if (distPx(cand, placed[j], w, h) < minCenterSeparationPx(cand.r, placed[j].r, w, h) * 0.92) {
+            clash = true;
+            break;
+          }
+        }
+        if (!clash) {
+          placed.push({
+            nx: cand.nx,
+            ny: cand.ny,
+            r: cand.r,
+            srx: (Math.random() - 0.5) * 0.92,
+            sry: (Math.random() - 0.5) * 0.92,
+            srz: (Math.random() - 0.5) * 0.92,
+            ox: Math.random() * Math.PI * 2,
+            oy: Math.random() * Math.PI * 2,
+            oz: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    }
+
+    /* Tighter packing if still short — smaller meshes, relaxed separation */
+    var extraAttempts = 0;
+    while (placed.length < TARGET_COUNT && extraAttempts < 1200) {
+      extraAttempts++;
+      var rSmall = 0.26 + Math.random() * 0.14;
+      var nx2 = (Math.random() - 0.5) * 2 * halfInset;
+      var ny2 = (Math.random() - 0.5) * 2 * halfInset;
+      var cand2 = { nx: nx2, ny: ny2, r: rSmall };
+      var ok2 = true;
+      for (var k = 0; k < placed.length; k++) {
+        if (distPx(cand2, placed[k], w, h) < minCenterSeparationPx(rSmall, placed[k].r, w, h) * 0.58) {
+          ok2 = false;
+          break;
+        }
+      }
+      if (ok2) {
+        placed.push({
+          nx: nx2,
+          ny: ny2,
+          r: rSmall,
+          srx: (Math.random() - 0.5) * 0.92,
+          sry: (Math.random() - 0.5) * 0.92,
+          srz: (Math.random() - 0.5) * 0.92,
+          ox: Math.random() * Math.PI * 2,
+          oy: Math.random() * Math.PI * 2,
+          oz: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    return placed;
+  }
+
+  function maybeRegenerateSpheres(w, h) {
+    if (w < 24 || h < 24) return;
+    var need =
+      spheres.length === 0 ||
+      !sphereGenW ||
+      Math.abs(w - sphereGenW) / sphereGenW > 0.14 ||
+      Math.abs(h - sphereGenH) / sphereGenH > 0.14;
+    if (need) {
+      spheres = generateSpheres(w, h);
+      sphereGenW = w;
+      sphereGenH = h;
+    }
+  }
 
   var t0 = performance.now();
 
@@ -154,6 +298,7 @@
     var rect = canvas.getBoundingClientRect();
     var w = rect.width;
     var h = rect.height;
+    maybeRegenerateSpheres(w, h);
     ctx.clearRect(0, 0, w, h);
     ctx.strokeStyle = lineColor();
     ctx.lineWidth = 3.25;
@@ -196,6 +341,8 @@
   }
 
   resize();
+  var rect0 = canvas.getBoundingClientRect();
+  maybeRegenerateSpheres(rect0.width, rect0.height);
   window.addEventListener("resize", function () {
     resize();
     draw();
