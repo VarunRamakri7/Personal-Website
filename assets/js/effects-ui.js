@@ -57,6 +57,16 @@
 
     syncButtons();
 
+    var cluster = document.querySelector(".theme-toggle-cluster");
+    if (cluster) {
+      cluster.addEventListener("mouseleave", function () {
+        var a = document.activeElement;
+        if (a && cluster.contains(a)) {
+          a.blur();
+        }
+      });
+    }
+
     window.addEventListener("storage", function (e) {
       if (e.key === KEY_CURSOR || e.key === KEY_MAGNIFIER) {
         syncButtons();
