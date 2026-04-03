@@ -165,6 +165,14 @@ img {
   border-radius: 2px;
 }
 
+/* Which dock is open: reinforce the active nav control (paired with body.drawer-active--* from site.js). */
+body.drawer-active--projects #btn-projects.text-btn,
+body.drawer-active--information #btn-information.text-btn {
+  border-bottom-color: currentColor;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
 /* Hero */
 .hero {
   position: relative;
@@ -230,12 +238,39 @@ img {
   font-weight: 400;
 }
 
+@keyframes hero-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-home .hero__name {
+    animation: hero-content-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .page-home .hero__line--primary {
+    animation: hero-content-in 0.7s 0.08s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .page-home .hero__line--secondary {
+    animation: hero-content-in 0.65s 0.16s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
 /* Backdrop */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.48);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
   opacity: 0;
   transition: opacity var(--transition-drawer);
   pointer-events: none;
@@ -248,7 +283,7 @@ img {
 }
 
 html[data-theme="light"] .backdrop {
-  background: rgba(3, 22, 40, 0.28);
+  background: rgba(3, 22, 40, 0.22);
 }
 
 /* Drawers — floating docks: height follows content up to --drawer-max-height, then scroll */
@@ -344,6 +379,26 @@ html[data-theme="light"] .drawer {
 
 .drawer__body--scroll {
   padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 28px) clamp(24px, 4vw, 40px);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 28%, transparent) transparent;
+}
+
+.drawer__body--scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+.drawer__body--scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.drawer__body--scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 22%, transparent);
+  border-radius: 4px;
+}
+
+.drawer__body--scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-text) 35%, transparent);
 }
 
 .drawer__body--info {
@@ -351,6 +406,17 @@ html[data-theme="light"] .drawer {
 }
 
 /* Project list (from former portfolio) */
+@keyframes project-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .project-list {
   list-style: none;
   margin: 0;
@@ -360,6 +426,24 @@ html[data-theme="light"] .drawer {
   gap: clamp(28px, 5vw, 40px);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  body.drawer-active--projects .drawer--left.drawer--open .project-list > li {
+    animation: project-row-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  body.drawer-active--projects .drawer--left.drawer--open .project-list > li:nth-child(1) {
+    animation-delay: 0.04s;
+  }
+
+  body.drawer-active--projects .drawer--left.drawer--open .project-list > li:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  body.drawer-active--projects .drawer--left.drawer--open .project-list > li:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+}
+
 .project-card {
   display: grid;
   grid-template-columns: 100px 1fr;
@@ -367,17 +451,34 @@ html[data-theme="light"] .drawer {
   align-items: start;
   text-decoration: none;
   color: inherit;
-  transition: opacity var(--transition-fast);
+  border-radius: 12px;
+  padding: 10px;
+  margin: -10px;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .project-card:hover {
-  opacity: 0.92;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.project-card:active {
+  transform: translateY(-1px);
+}
+
+html[data-theme="light"] .project-card:hover {
+  box-shadow: 0 14px 36px rgba(3, 22, 40, 0.14);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .project-card:focus-visible {
   outline: 2px solid var(--color-link);
   outline-offset: 6px;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .project-card__thumb {
@@ -397,6 +498,17 @@ html[data-theme="light"] .project-card__thumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card:hover .project-card__thumb img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card:hover .project-card__thumb img {
+    transform: none;
+  }
 }
 
 /* GitHub thumbnail is authored for light UI; invert in dark mode only */
@@ -500,6 +612,14 @@ html[data-theme="light"] .project-card__thumb--github img {
   box-shadow: 0 12px 44px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+.theme-toggle:active {
+  transform: scale(0.97);
+}
+
+html[data-theme="light"] .theme-toggle:active {
+  transform: scale(0.97);
+}
+
 .theme-toggle:focus-visible {
   outline: 2px solid var(--color-link);
   outline-offset: 3px;
@@ -545,7 +665,18 @@ html[data-theme="light"] .theme-toggle__icon--moon {
     transition-duration: 0.01ms;
   }
 
-  .theme-toggle:hover {
+  .backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:active {
+    transform: none;
+  }
+
+  .project-card:hover,
+  .project-card:active {
     transform: none;
   }
 }

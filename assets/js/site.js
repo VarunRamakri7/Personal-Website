@@ -11,9 +11,15 @@
   var btnProjects = document.getElementById("btn-projects");
   var btnInformation = document.getElementById("btn-information");
 
+  /** Element to restore keyboard focus when the overlay closes (usually the nav control that opened it). */
+  var focusReturnEl = null;
+
   function openPanel(which) {
+    focusReturnEl = document.activeElement;
     var projectsOpen = which === "projects";
+    body.classList.remove("drawer-active--projects", "drawer-active--information");
     if (projectsOpen) {
+      body.classList.add("drawer-active--projects");
       panelInfo.hidden = true;
       panelInfo.classList.remove("drawer--open");
       btnInformation.setAttribute("aria-expanded", "false");
@@ -31,6 +37,7 @@
         panelInfo.classList.add("drawer--open");
       });
       btnInformation.setAttribute("aria-expanded", "true");
+      body.classList.add("drawer-active--information");
     }
     backdrop.hidden = false;
     requestAnimationFrame(function () {
@@ -44,16 +51,28 @@
   }
 
   function closePanels() {
+    var returnFocusTo = focusReturnEl;
     panelProjects.classList.remove("drawer--open");
     panelInfo.classList.remove("drawer--open");
     backdrop.classList.remove("backdrop--visible");
     body.classList.remove("drawer-active");
+    body.classList.remove("drawer-active--projects", "drawer-active--information");
     btnProjects.setAttribute("aria-expanded", "false");
     btnInformation.setAttribute("aria-expanded", "false");
+    focusReturnEl = null;
     function hideAfterTransition() {
       panelProjects.hidden = true;
       panelInfo.hidden = true;
       backdrop.hidden = true;
+      if (
+        returnFocusTo &&
+        typeof returnFocusTo.focus === "function" &&
+        document.body.contains(returnFocusTo)
+      ) {
+        try {
+          returnFocusTo.focus();
+        } catch (e) {}
+      }
     }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       hideAfterTransition();
