@@ -1,5 +1,11 @@
 /**
- * Toggles for optional cursor effects (persisted). Dispatches site-effects-changed for hero-magnifier / cursor-invert.
+ * Effect toggles beside the theme button (hover/focus cluster). Updates button UI and localStorage.
+ *
+ * Dispatches window "site-effects-changed" after writes so cursor-invert.js and hero-magnifier.js resync.
+ * Tunable:
+ *   KEY_CURSOR — opt-in: enabled only when value is "1" (default off for new visitors).
+ *   KEY_MAGNIFIER — opt-out: disabled only when value is "0" (default on).
+ * HTML: #effect-toggle-cursor-invert, #effect-toggle-hero-magnifier inside .theme-toggle-cluster.
  */
 (function () {
   "use strict";

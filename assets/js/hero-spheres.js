@@ -1,3 +1,13 @@
+/**
+ * Hero background: multiple rotating icosahedron wireframes on .hero__spheres-canvas.
+ *
+ * Tunable:
+ *   TARGET_COUNT — how many meshes to place; EDGE_MARGIN — inset from canvas edges (0–0.5 scale).
+ *   lineColor() — stroke rgba for light vs dark theme (reads data-theme).
+ *   draw() — ctx.lineWidth, persp, scale multiplier (Math.min(w,h) * 0.45), and rotation speed from each sphere’s srx/sry/srz.
+ *   dpr — capped at 2 for performance (devicePixelRatio).
+ * Geometry: rawVerts/faces/edges define the mesh; change only if you want a different polyhedron.
+ */
 (function () {
   var canvas = document.querySelector(".hero__spheres-canvas");
   if (!canvas) return;
@@ -125,7 +135,7 @@
   var sphereGenH = 0;
 
   var TARGET_COUNT = 6;
-  /** Keep icosahedra inset from edges (fraction of half-width / half-height). */
+  /** Keep icosahedra inset from edges (fraction of half-width / half-height); increase for more margin. */
   var EDGE_MARGIN = 0.07;
   /** Min separation between centers in px — scales with projected mesh size. */
   function minCenterSeparationPx(r1, r2, w, h) {

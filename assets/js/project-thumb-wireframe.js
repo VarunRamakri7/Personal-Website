@@ -1,5 +1,11 @@
 /**
- * Works thumbnails: same wireframe polyhedron as hero-spheres.js (icosahedron), one per card.
+ * Optional Works thumbnails: same icosahedron wireframe as hero-spheres.js, one canvas per .project-card__canvas.
+ * If no such elements exist, the script exits (home currently uses static images in .project-card__thumb).
+ *
+ * Tunable:
+ *   presets[] — per-card initial angles (ox,oy,oz) and spin rates (srx,sry,srz); cycles with index % presets.length.
+ *   lineColor() — stroke rgba for light/dark theme.
+ *   drawEntry() — lineWidth, scale (* 0.38), persp (2.5) to match thumbnail size/depth.
  */
 (function () {
   "use strict";

@@ -1,3 +1,11 @@
+/**
+ * Circular cursor “lens” using mix-blend-mode: difference (see .cursor-invert in main.css).
+ * Only runs on fine pointers with hover; respects site-effect-cursor-invert === "1" and site-effects-changed.
+ *
+ * Tunable:
+ *   Visual size / opacity / blend — CSS on .cursor-invert; radius via html.has-cursor-invert { --cursor-invert-radius }.
+ *   isUserEnabled() — must stay aligned with effects-ui KEY_CURSOR semantics.
+ */
 (function () {
   var mq;
   try {

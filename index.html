@@ -59,7 +59,7 @@
   <svg class="hero-magnifier-filters" aria-hidden="true" focusable="false" width="0" height="0">
     <defs>
       <filter id="hero-magnifier-lens" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
-        <!-- Map bitmap is set from JS (radial barrel + soft rim); neutral gray = no displacement -->
+        <!-- Map from hero-magnifier.js; feDisplacementMap @ scale pairs with canvas map amplitude -->
         <feImage id="hero-magnifier-lens-map" result="lensmap" x="0" y="0" width="184" height="184" preserveAspectRatio="none" />
         <feDisplacementMap in="SourceGraphic" in2="lensmap" scale="20" xChannelSelector="R" yChannelSelector="G" />
       </filter>

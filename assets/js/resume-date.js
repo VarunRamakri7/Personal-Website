@@ -1,3 +1,7 @@
+/**
+ * Resume page: sets .resume-masthead__date text to today’s date (locale) and datetime ISO (YYYY-MM-DD).
+ * Tunable: toLocaleDateString options for format; no other globals.
+ */
 (function () {
   var el = document.querySelector(".resume-masthead__date");
   if (!el) return;

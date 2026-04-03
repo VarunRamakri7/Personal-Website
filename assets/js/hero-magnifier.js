@@ -1,5 +1,13 @@
 /**
- * Magnifying glass over hero landing text only. Renders below #cursor-invert (mix-blend unchanged).
+ * Magnifying glass over #hero-magnifier-source only: clones hero text, scales it, SVG lens filter, masks source.
+ * z-index below #cursor-invert. Disabled when prefers-reduced-motion: reduce or site-effect-hero-magnifier === "0".
+ *
+ * Tunable (this file):
+ *   R — lens radius (px); half of .hero-magnifier width/height in CSS (keep JS, CSS, index.html feImage width in sync).
+ *   scale — zoom factor for the cloned text.
+ *   buildLensDisplacementMapDataUrl: edgeInner, barrel/rim coefficients, final 0.42 strength — barrel “glass” warp.
+ * Tunable (index.html): filter #hero-magnifier-lens feDisplacementMap @ scale — displacement strength in px.
+ * Tunable (main.css): mask feather on #hero-magnifier-source.hero-magnifier-source--masked; glass rim .hero-magnifier::after.
  */
 (function () {
   "use strict";
@@ -24,7 +32,9 @@
   var sheet = null;
   var cloneRoot = null;
 
+  /** Lens radius (px); pair with CSS .hero-magnifier { width/height: 2*R } and feImage width/height in index.html */
   var R = 92;
+  /** Zoom of the cloned hero text inside the lens */
   var scale = 1.62;
   /** Radial lens displacement map (once); matches SVG feDisplacementMap neutral 0.5 in R/G */
   var lensMapDataUrl = null;
@@ -51,7 +61,7 @@
     var r;
     var ux;
     var uy;
-    /** Smooth 0→1 from edgeInner to 1 (keeps displacement ~0 at rim, avoids harsh clip) */
+    /** Rim falloff start (0–1 radius); higher = softer transition at circle edge */
     var edgeInner = 0.78;
     var barrel;
     var rim;
@@ -84,6 +94,7 @@
           rim = (1 - r) / (1 - edgeInner);
           rim = rim * rim * (3 - 2 * rim);
         }
+        /* Overall warp strength; tune with feDisplacementMap scale in index.html */
         mag = barrel * rim * 0.42;
         dr = ux * mag;
         dg = uy * mag;

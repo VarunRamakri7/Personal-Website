@@ -1,5 +1,10 @@
 /**
  * Home: slide-out Projects (left) and Information (right) drawers.
+ *
+ * Expects: #backdrop, #panel-projects, #panel-information, #btn-projects, #btn-information,
+ *   and [data-close] inside each panel.
+ * Tunable: closePanels() uses setTimeout(..., 400) to match --transition-drawer / drawer CSS;
+ *   change that delay if drawer transition duration changes.
  */
 (function () {
   "use strict";
