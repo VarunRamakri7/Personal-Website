@@ -153,6 +153,10 @@
 
     source.style.setProperty("--hero-magnifier-r", R + "px");
     attachLensDisplacementMap();
+    updateGlassShading(
+      typeof window.innerWidth === "number" ? window.innerWidth * 0.72 : 400,
+      typeof window.innerHeight === "number" ? window.innerHeight * 0.26 : 300
+    );
   }
 
   function destroy() {
@@ -180,6 +184,34 @@
     source.style.setProperty("--mask-y", my - rect.top + "px");
   }
 
+  /**
+   * Glass shading: fixed light from top-right; highlight / shadow slide with pointer (parallax).
+   * CSS vars on #hero-magnifier: --mag-spec-*, --mag-shade-*, --mag-light-angle (unitless, degrees).
+   */
+  function updateGlassShading(mx, my) {
+    if (!root) return;
+    var W = window.innerWidth || 1;
+    var H = window.innerHeight || 1;
+    var nx = mx / W - 0.5;
+    var ny = my / H - 0.5;
+    var baseSpecX = 0.72;
+    var baseSpecY = 0.26;
+    var specX = baseSpecX + nx * 0.28;
+    var specY = baseSpecY + ny * 0.24;
+    if (specX < 0.52) specX = 0.52;
+    if (specX > 0.93) specX = 0.93;
+    if (specY < 0.08) specY = 0.08;
+    if (specY > 0.48) specY = 0.48;
+    var shadeX = 1 - specX;
+    var shadeY = 1 - specY;
+    var angle = -46 + nx * 24 + ny * 20;
+    root.style.setProperty("--mag-spec-x", (specX * 100).toFixed(2) + "%");
+    root.style.setProperty("--mag-spec-y", (specY * 100).toFixed(2) + "%");
+    root.style.setProperty("--mag-shade-x", (shadeX * 100).toFixed(2) + "%");
+    root.style.setProperty("--mag-shade-y", (shadeY * 100).toFixed(2) + "%");
+    root.style.setProperty("--mag-light-angle", angle.toFixed(2));
+  }
+
   function updatePosition(mx, my) {
     if (!root || !viewport || !sheet || !cloneRoot) return;
 
@@ -205,6 +237,7 @@
 
     root.classList.add("hero-magnifier--on");
     applySourceMask(mx, my);
+    updateGlassShading(mx, my);
   }
 
   function frame() {

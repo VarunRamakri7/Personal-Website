@@ -318,6 +318,12 @@ body.drawer-active--information #btn-information.text-btn {
   /* Clip the whole stack to a circle: SVG filter output can show a square tile when nothing sits above (e.g. inversion off). */
   border-radius: 50%;
   overflow: hidden;
+  /* Glass shading (updated from JS): light from top-right, parallax from pointer */
+  --mag-spec-x: 72%;
+  --mag-spec-y: 26%;
+  --mag-shade-x: 28%;
+  --mag-shade-y: 74%;
+  --mag-light-angle: -46;
 }
 
 .hero-magnifier.hero-magnifier--on {
@@ -335,29 +341,67 @@ body.drawer-active .hero-magnifier {
   overflow: hidden;
   clip-path: circle(50% at 50% 50%);
   filter: url(#hero-magnifier-lens);
+  /* Dark theme: rim + lift (light theme overrides below) */
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
-    inset 0 0 24px rgba(255, 255, 255, 0.06),
-    0 4px 24px rgba(0, 0, 0, 0.25);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 0 0 22px rgba(255, 255, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* Glass rim + shading (not inside SVG filter): keeps edge readable on light pages when inversion is off */
+/* Glass rim + shading (not inside SVG filter); positions track --mag-* from JS (top-right light + parallax) */
 .hero-magnifier::after {
-  display: none;
-}
-
-html[data-theme="light"] .hero-magnifier::after {
-  display: block;
   content: "";
   position: absolute;
   inset: 0;
   z-index: 2;
   border-radius: 50%;
   pointer-events: none;
+  display: block;
+  transition:
+    background 0.12s ease,
+    box-shadow 0.12s ease;
   background:
-    radial-gradient(ellipse 90% 50% at 50% 14%, rgba(255, 255, 255, 0.55) 0%, transparent 52%),
-    radial-gradient(ellipse 110% 70% at 50% 108%, rgba(3, 22, 40, 0.12) 0%, transparent 48%),
-    linear-gradient(175deg, rgba(255, 255, 255, 0.22) 0%, transparent 42%, rgba(3, 22, 40, 0.05) 100%);
+    radial-gradient(
+      ellipse 90% 50% at var(--mag-spec-x, 72%) var(--mag-spec-y, 26%),
+      rgba(255, 255, 255, 0.42) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 110% 70% at var(--mag-shade-x, 28%) var(--mag-shade-y, 74%),
+      rgba(0, 0, 0, 0.38) 0%,
+      transparent 48%
+    ),
+    linear-gradient(
+      calc(var(--mag-light-angle, -46) * 1deg),
+      rgba(255, 255, 255, 0.18) 0%,
+      transparent 42%,
+      rgba(0, 0, 0, 0.22) 100%
+    );
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.34),
+    inset 0 2px 14px rgba(255, 255, 255, 0.16),
+    inset 0 -12px 28px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="light"] .hero-magnifier::after {
+  background:
+    radial-gradient(
+      ellipse 90% 50% at var(--mag-spec-x, 72%) var(--mag-spec-y, 26%),
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 110% 70% at var(--mag-shade-x, 28%) var(--mag-shade-y, 74%),
+      rgba(3, 22, 40, 0.12) 0%,
+      transparent 48%
+    ),
+    linear-gradient(
+      calc(var(--mag-light-angle, -46) * 1deg),
+      rgba(255, 255, 255, 0.22) 0%,
+      transparent 42%,
+      rgba(3, 22, 40, 0.05) 100%
+    );
   box-shadow:
     inset 0 0 0 1.5px rgba(3, 22, 40, 0.38),
     inset 0 2px 12px rgba(255, 255, 255, 0.55),
