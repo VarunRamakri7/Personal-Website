@@ -332,11 +332,16 @@ body.drawer-active .hero-magnifier {
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
-  filter: url(#hero-magnifier-lens);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.22),
     inset 0 0 24px rgba(255, 255, 255, 0.06),
     0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Lens distortion on type + nav only; applying it to the whole viewport smears thin canvas strokes into solid blobs. */
+.hero-magnifier .top-nav,
+.hero-magnifier .hero__text {
+  filter: url(#hero-magnifier-lens);
 }
 
 .hero-magnifier__sheet {

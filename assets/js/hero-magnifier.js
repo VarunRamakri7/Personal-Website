@@ -94,6 +94,9 @@
     var cctx = clone.getContext("2d");
     if (!cctx) return;
     cctx.setTransform(1, 0, 0, 1, 0, 0);
+    /* Transparent pixels in orig do not erase the destination under source-over; clear first or old strokes persist. */
+    cctx.globalCompositeOperation = "source-over";
+    cctx.clearRect(0, 0, clone.width, clone.height);
     cctx.drawImage(orig, 0, 0);
   }
 
