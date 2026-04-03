@@ -156,7 +156,7 @@
     var h = rect.height;
     ctx.clearRect(0, 0, w, h);
     ctx.strokeStyle = lineColor();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 3.25;
     ctx.lineJoin = "round";
 
     var t = (performance.now() - t0) / 1000;
