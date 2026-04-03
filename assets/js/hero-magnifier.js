@@ -1,5 +1,5 @@
 /**
- * Magnifying glass over the landing area (nav + hero). Renders below #cursor-invert (mix-blend unchanged).
+ * Magnifying glass over hero landing text only. Renders below #cursor-invert (mix-blend unchanged).
  */
 (function () {
   "use strict";
@@ -26,11 +26,106 @@
 
   var R = 92;
   var scale = 1.62;
+  /** Radial lens displacement map (once); matches SVG feDisplacementMap neutral 0.5 in R/G */
+  var lensMapDataUrl = null;
+
+  function buildLensDisplacementMapDataUrl() {
+    if (lensMapDataUrl) return lensMapDataUrl;
+    var size = 256;
+    var cx = (size - 1) / 2;
+    var cy = (size - 1) / 2;
+    var radius = size / 2;
+    var canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+    var img = ctx.createImageData(size, size);
+    var d = img.data;
+    var i = 0;
+    var j;
+    var x;
+    var y;
+    var nx;
+    var ny;
+    var r;
+    var ux;
+    var uy;
+    /** Smooth 0→1 from edgeInner to 1 (keeps displacement ~0 at rim, avoids harsh clip) */
+    var edgeInner = 0.78;
+    var barrel;
+    var rim;
+    var mag;
+    var dr;
+    var dg;
+    for (y = 0; y < size; y++) {
+      for (x = 0; x < size; x++) {
+        nx = (x - cx) / radius;
+        ny = (y - cy) / radius;
+        r = Math.sqrt(nx * nx + ny * ny);
+        if (r > 1.001) {
+          d[i] = 128;
+          d[i + 1] = 128;
+          d[i + 2] = 128;
+          d[i + 3] = 255;
+          i += 4;
+          continue;
+        }
+        if (r < 1e-6) {
+          ux = 0;
+          uy = 0;
+        } else {
+          ux = nx / r;
+          uy = ny / r;
+        }
+        barrel = r * r * (1 - 0.35 * r * r);
+        rim = 1;
+        if (r > edgeInner) {
+          rim = (1 - r) / (1 - edgeInner);
+          rim = rim * rim * (3 - 2 * rim);
+        }
+        mag = barrel * rim * 0.42;
+        dr = ux * mag;
+        dg = uy * mag;
+        j = Math.round(255 * (0.5 + dr));
+        if (j < 0) j = 0;
+        if (j > 255) j = 255;
+        d[i] = j;
+        j = Math.round(255 * (0.5 + dg));
+        if (j < 0) j = 0;
+        if (j > 255) j = 255;
+        d[i + 1] = j;
+        d[i + 2] = 128;
+        d[i + 3] = 255;
+        i += 4;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    lensMapDataUrl = canvas.toDataURL("image/png");
+    return lensMapDataUrl;
+  }
+
+  function attachLensDisplacementMap() {
+    var url = buildLensDisplacementMapDataUrl();
+    if (!url) return;
+    var el = document.getElementById("hero-magnifier-lens-map");
+    if (!el) return;
+    /* Explicit px size (not %): parent SVG is 0×0 CSS, so % on feImage mis-centers the map vs SourceGraphic. */
+    var side = R * 2;
+    el.setAttribute("x", "0");
+    el.setAttribute("y", "0");
+    el.setAttribute("width", String(side));
+    el.setAttribute("height", String(side));
+    el.setAttribute("href", url);
+    try {
+      el.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
+    } catch (err) {}
+  }
+
   var raf = 0;
   var pending = null;
   var lastX = 0;
   var lastY = 0;
-  var canvasSyncRaf = 0;
 
   function build() {
     if (root) return;
@@ -50,7 +145,6 @@
     cloneRoot.removeAttribute("id");
     cloneRoot.setAttribute("aria-hidden", "true");
     cloneRoot.className = source.className + " hero-magnifier__clone";
-    stripCloneIds();
 
     sheet.appendChild(cloneRoot);
     viewport.appendChild(sheet);
@@ -58,17 +152,10 @@
     document.body.appendChild(root);
 
     source.style.setProperty("--hero-magnifier-r", R + "px");
-  }
-
-  function stripCloneIds() {
-    if (!cloneRoot) return;
-    cloneRoot.querySelectorAll("[id]").forEach(function (el) {
-      el.removeAttribute("id");
-    });
+    attachLensDisplacementMap();
   }
 
   function destroy() {
-    stopCanvasSyncLoop();
     if (root && root.parentNode) {
       root.parentNode.removeChild(root);
     }
@@ -78,46 +165,6 @@
   function syncCloneFromSource() {
     if (!cloneRoot || !source) return;
     cloneRoot.innerHTML = source.innerHTML;
-    stripCloneIds();
-    syncCloneCanvas();
-  }
-
-  function syncCloneCanvas() {
-    if (!cloneRoot || !source) return;
-    var orig = source.querySelector(".hero__spheres-canvas");
-    var clone = cloneRoot.querySelector(".hero__spheres-canvas");
-    if (!orig || !clone) return;
-    if (clone.width !== orig.width || clone.height !== orig.height) {
-      clone.width = orig.width;
-      clone.height = orig.height;
-    }
-    var cctx = clone.getContext("2d");
-    if (!cctx) return;
-    cctx.setTransform(1, 0, 0, 1, 0, 0);
-    /* Transparent pixels in orig do not erase the destination under source-over; clear first or old strokes persist. */
-    cctx.globalCompositeOperation = "source-over";
-    cctx.clearRect(0, 0, clone.width, clone.height);
-    cctx.drawImage(orig, 0, 0);
-  }
-
-  function startCanvasSyncLoop() {
-    if (canvasSyncRaf) return;
-    function tick() {
-      syncCloneCanvas();
-      if (root && root.classList.contains("hero-magnifier--on")) {
-        canvasSyncRaf = requestAnimationFrame(tick);
-      } else {
-        canvasSyncRaf = 0;
-      }
-    }
-    canvasSyncRaf = requestAnimationFrame(tick);
-  }
-
-  function stopCanvasSyncLoop() {
-    if (canvasSyncRaf) {
-      cancelAnimationFrame(canvasSyncRaf);
-      canvasSyncRaf = 0;
-    }
   }
 
   function clearSourceMask() {
@@ -140,7 +187,6 @@
     if (rect.width < 4 || rect.height < 4) {
       root.classList.remove("hero-magnifier--on");
       clearSourceMask();
-      stopCanvasSyncLoop();
       return;
     }
 
@@ -159,8 +205,6 @@
 
     root.classList.add("hero-magnifier--on");
     applySourceMask(mx, my);
-    syncCloneCanvas();
-    startCanvasSyncLoop();
   }
 
   function frame() {
@@ -173,7 +217,6 @@
     if (document.body.classList.contains("drawer-active")) {
       if (root) root.classList.remove("hero-magnifier--on");
       clearSourceMask();
-      stopCanvasSyncLoop();
       return;
     }
 
@@ -187,7 +230,6 @@
     if (!over) {
       if (root) root.classList.remove("hero-magnifier--on");
       clearSourceMask();
-      stopCanvasSyncLoop();
       return;
     }
 
@@ -226,16 +268,24 @@
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", onResize);
+    source.addEventListener("mouseleave", onSourceLeave);
     new MutationObserver(function () {
       syncCloneFromSource();
     }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
+  function onSourceLeave() {
+    clearSourceMask();
+    if (root) root.classList.remove("hero-magnifier--on");
   }
 
   function disable() {
     window.removeEventListener("mousemove", onMove);
     window.removeEventListener("scroll", onScroll, true);
     window.removeEventListener("resize", onResize);
-    stopCanvasSyncLoop();
+    if (source) {
+      source.removeEventListener("mouseleave", onSourceLeave);
+    }
     clearSourceMask();
     destroy();
   }

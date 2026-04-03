@@ -177,12 +177,6 @@ body.drawer-active--information #btn-information.text-btn {
 }
 
 /* Hero */
-/* Wraps fixed nav + hero for the magnifier source/clone (full landing hit area). */
-.landing-magnifier-root {
-  width: 100%;
-  min-height: 100vh;
-}
-
 .hero {
   position: relative;
   isolation: isolate;
@@ -223,17 +217,19 @@ body.drawer-active--information #btn-information.text-btn {
   gap: clamp(1.25rem, 4vh, 2.5rem);
 }
 
-/* Hide landing content under the magnifier lens only (clone shows zoomed pixels there). */
+/* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
 #hero-magnifier-source.hero-magnifier-source--masked {
+  mask-origin: border-box;
+  -webkit-mask-origin: border-box;
   -webkit-mask-image: radial-gradient(
     circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
-    rgba(255, 255, 255, 0) 91px,
-    rgba(255, 255, 255, 1) 92.5px
+    rgba(255, 255, 255, 0) calc(var(--hero-magnifier-r, 92px) - 1px),
+    rgba(255, 255, 255, 1) calc(var(--hero-magnifier-r, 92px) + 0.5px)
   );
   mask-image: radial-gradient(
     circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
-    rgba(255, 255, 255, 0) 91px,
-    rgba(255, 255, 255, 1) 92.5px
+    rgba(255, 255, 255, 0) calc(var(--hero-magnifier-r, 92px) - 1px),
+    rgba(255, 255, 255, 1) calc(var(--hero-magnifier-r, 92px) + 0.5px)
   );
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
@@ -297,11 +293,13 @@ body.drawer-active--information #btn-information.text-btn {
 }
 
 /* Hero magnifier clone (outside .hero) — match landing typography + theme tokens */
+/* Non-zero size so filter defs don’t resolve % against a 0×0 SVG viewport in edge cases */
 .hero-magnifier-filters {
   position: absolute;
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .hero-magnifier {
@@ -332,16 +330,11 @@ body.drawer-active .hero-magnifier {
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
+  filter: url(#hero-magnifier-lens);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.22),
     inset 0 0 24px rgba(255, 255, 255, 0.06),
     0 4px 24px rgba(0, 0, 0, 0.25);
-}
-
-/* Lens distortion on type + nav only; applying it to the whole viewport smears thin canvas strokes into solid blobs. */
-.hero-magnifier .top-nav,
-.hero-magnifier .hero__text {
-  filter: url(#hero-magnifier-lens);
 }
 
 .hero-magnifier__sheet {

@@ -24,39 +24,37 @@
 
   <div class="backdrop" id="backdrop" hidden></div>
 
-  <div id="hero-magnifier-source" class="landing-magnifier-root">
-    <header class="top-nav">
-      <nav class="top-nav__cluster" aria-label="Site sections">
-        <button type="button" class="text-btn" id="btn-projects" aria-expanded="false" aria-controls="panel-projects">Portfolio</button>
-        <button type="button" class="text-btn" id="btn-information" aria-expanded="false" aria-controls="panel-information">Information</button>
-      </nav>
-      <nav class="top-nav__cluster top-nav__cluster--end" aria-label="Links">
-        <a class="text-link" href="mailto:oceans.varun+portfoliowebsite@gmail.com">Email</a>
-        <a class="text-link" href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a class="text-link" href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      </nav>
-    </header>
+  <header class="top-nav">
+    <nav class="top-nav__cluster" aria-label="Site sections">
+      <button type="button" class="text-btn" id="btn-projects" aria-expanded="false" aria-controls="panel-projects">Portfolio</button>
+      <button type="button" class="text-btn" id="btn-information" aria-expanded="false" aria-controls="panel-information">Information</button>
+    </nav>
+    <nav class="top-nav__cluster top-nav__cluster--end" aria-label="Links">
+      <a class="text-link" href="mailto:oceans.varun+portfoliowebsite@gmail.com">Email</a>
+      <a class="text-link" href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="text-link" href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
 
-    <main id="main" class="hero">
-      <div class="hero__bg" aria-hidden="true">
-        <canvas class="hero__spheres-canvas" width="800" height="600"></canvas>
-      </div>
-      <div class="hero__text">
-        <h1 class="hero__name">
-          <span class="hero__name-line">Varun Ramakrishnan</span>
-        </h1>
-        <p class="hero__line hero__line--primary">Software Engineer</p>
-        <p class="hero__line hero__line--secondary">Platform & Tools, Graphics, Games</p>
-      </div>
-    </main>
-  </div>
+  <main id="main" class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <canvas class="hero__spheres-canvas" width="800" height="600"></canvas>
+    </div>
+    <div class="hero__text" id="hero-magnifier-source">
+      <h1 class="hero__name">
+        <span class="hero__name-line">Varun Ramakrishnan</span>
+      </h1>
+      <p class="hero__line hero__line--primary">Software Engineer</p>
+      <p class="hero__line hero__line--secondary">Platform & Tools, Graphics, Games</p>
+    </div>
+  </main>
 
   <svg class="hero-magnifier-filters" aria-hidden="true" focusable="false" width="0" height="0">
     <defs>
-      <filter id="hero-magnifier-lens" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="1" seed="42" result="noise" />
-        <feGaussianBlur in="noise" stdDeviation="1.2" result="smooth" />
-        <feDisplacementMap in="SourceGraphic" in2="smooth" scale="7" xChannelSelector="R" yChannelSelector="G" />
+      <filter id="hero-magnifier-lens" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+        <!-- Map bitmap is set from JS (radial barrel + soft rim); neutral gray = no displacement -->
+        <feImage id="hero-magnifier-lens-map" result="lensmap" x="0" y="0" width="184" height="184" preserveAspectRatio="none" />
+        <feDisplacementMap in="SourceGraphic" in2="lensmap" scale="20" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </defs>
   </svg>
