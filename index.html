@@ -1,172 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Varun Ramakrishnan</title>
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <script>
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark") {
+        document.documentElement.setAttribute("data-theme", t);
+      } else if (window.matchMedia) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
+        );
+      }
+    } catch (e) {}
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="My portfolio website">
-  <meta name="keywords" content="personal, portfolio, website, html, sass, jquery">
+  <meta name="description" content="Varun Ramakrishnan — portfolio">
+  <meta name="theme-color" content="#465166">
   <meta name="author" content="Varun Ramakrishnan">
+  <title>Varun Ramakrishnan</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body class="page-home">
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- notification for small viewports and landscape oriented smartphones -->
-<div class="device-notification">
-  <a class="device-notification--logo" href="#0">
-    <img src="assets/img/vr-logo-min.png" alt="Global">
-    <p>Varun Ramakrishnan</p>
-  </a>
-  <p class="device-notification--message">I apologize, but I must request you orient your device to portrait or view my website from a larger screen. You won't be disappointed.</p>
-</div>
+  <div class="backdrop" id="backdrop" hidden></div>
 
-<div class="perspective effect-rotate-left">
-  <div class="container"><div class="outer-nav--return"></div>
-    <div id="viewport" class="l-viewport">
-      <div class="l-wrapper">
-        <header class="header">
-          <a class="header--logo" href="#0">
-            <img src="assets/img/vr-logo-min.png" alt="Global">
-            <p>Varun Ramakrishnan</p>
-          </a>
-          <button class="header--cta cta">Contact</button>
-          <div class="header--nav-toggle">
-            <span></span>
-          </div>
-        </header>
-        <nav class="l-side-nav">
-          <ul class="side-nav">
-            <li class="is-active"><span>Home</span></li>
-            <li><span>Works</span></li>
-            <li><span>Contact</span></li>
-            <!--<li><span>Hire us</span></li>-->
-          </ul>
-        </nav>
-        <ul class="l-main-content main-content">
-          <li class="l-section section section--is-active">
-            <div class="intro">
-              <div class="intro--banner">
-                <h1>Welcome to<br>my corner of<br>the internet.</h1>
-                <button class="cta">Contact
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
-                  </g>
-                  </svg>
-                  <span class="btn-background"></span>
-                </button>
-                <img src="assets/img/intro-banner-min.png" alt="Welcome">
-              </div>
-              <div class="intro--options">
-                <a href="#0">
-                  <h3>Software Engineer</h3>
-                  <p>At PlayStation with a focus on full-stack development, and security as part of their Cross-Platform SDK team.</p>
-                </a>
-                <a href="#0">
-                  <h3>Game Developer</h3>
-                  <p>And passionate gamer who also develops games with a focus on Graphics, and Gameplay Mechanics in my free time.</p>
-                </a>
-                <a href="#0">
-                  <h3>Explorer</h3>
-                  <p>With the objective of experiencing, and documenting everything this amazing pale blue dot has to offer.</p>
-                </a>
-              </div>
-            </div>
-          </li>
-          <li class="l-section section">
-            <div class="work">
-              <h2>Portfolio</h2>
-              <div class="work--lockup">
-                <ul class="slider">
-                  <li class="slider--item slider--item-left">
-                    <a href="inner/Resume.html" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/resume-logo.png" alt="Resume">
-                      </div>
-                      <p class="slider--item-title">Resume</p>
-                      <p class="slider--item-description">A website-ified version of my paper resume.</p>
-                    </a>
-                  </li>
-                  <li class="slider--item slider--item-center">
-                    <a href="https://github.com/VarunRamakri7" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/github-logo.jpg" alt="GitHub">
-                      </div>
-                      <p class="slider--item-title">GitHub</p>
-                      <p class="slider--item-description">All my repositories with my games, graphics, and simulation projects.</p>
-                    </a>
-                  </li>
-                  <li class="slider--item slider--item-right">
-                    <a href="https://store.steampowered.com/app/1269250/War_Smith/" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/warsmith-logo.jpg" alt="War Smith">
-                      </div>
-                      <p class="slider--item-title">War Smith</p>
-                      <p class="slider--item-description">I was the Lead Programmer on this couch co-op that is available on Steam.</p>
-                    </a>
-                  </li>
-                  <!--<li class="slider--item slider--item-right">
-                    <a href="https://varunramakri7.github.io/BottomGun/" target="_blank" rel="noopener noreferrer">
-                      <div class="slider--item-image">
-                        <img src="assets/img/bottomgun-logo.jpg" alt="BottomGun">
-                      </div>
-                      <p class="slider--item-title">BottomGun</p>
-                      <p class="slider--item-description">My take on an endless runner that I made while learning WebGL.</p>
-                    </a>
-                  </li>-->
-                </ul>
-                <div class="slider--prev">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                  viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M561,1169C525,1155,10,640,3,612c-3-13,1-36,8-52c8-15,134-145,281-289C527,41,562,10,590,10c22,0,41,9,61,29
-                    c55,55,49,64-163,278L296,510h575c564,0,576,0,597,20c46,43,37,109-18,137c-19,10-159,13-590,13l-565,1l182,180
-                    c101,99,187,188,193,199c16,30,12,57-12,84C631,1174,595,1183,561,1169z"/>
-                  </g>
-                  </svg>
-                </div>
-                <div class="slider--next">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
-                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
-                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
-                  </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="l-section section">
-            <div class="contact">
-              <div class="contact--lockup">
-                <div class="modal">
-                  <div class="modal--information">
-                    <p>San Francisco, CA</p>
-                    <a href="mailto:oceans.varun+portfoliowebsite@gmail.com">oceans.varun@gmail.com</a>
-                  </div>
-                  <ul class="modal--options">
-                    <li><a href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-                    <li><a href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                    <li><a href="mailto:oceans.varun+portfoliowebsite@gmail.com"">Email Me</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+  <header class="top-nav">
+    <nav class="top-nav__cluster" aria-label="Site sections">
+      <button type="button" class="text-btn" id="btn-projects" aria-expanded="false" aria-controls="panel-projects">Portfolio</button>
+      <button type="button" class="text-btn" id="btn-information" aria-expanded="false" aria-controls="panel-information">Information</button>
+    </nav>
+    <nav class="top-nav__cluster top-nav__cluster--end" aria-label="Links">
+      <a class="text-link" href="mailto:oceans.varun+portfoliowebsite@gmail.com">Email</a>
+      <a class="text-link" href="https://www.instagram.com/vatacheyalalar_vandumurugan/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="text-link" href="https://www.linkedin.com/in/varun-ramakrishnan-085710136/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
+
+  <main id="main" class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <canvas class="hero__spheres-canvas" width="800" height="600"></canvas>
     </div>
-  </div>
-  <ul class="outer-nav">
-    <li class="is-active">Home</li>
-    <li>Works</li>
-    <li>Contact</li>
-  </ul>
-</div>
+    <div class="hero__text" id="hero-magnifier-source">
+      <h1 class="hero__name">
+        <span class="hero__name-line">Varun Ramakrishnan</span>
+      </h1>
+      <p class="hero__line hero__line--primary">Software Engineer</p>
+      <p class="hero__line hero__line--secondary">Platform & Tools, Graphics, Games</p>
+    </div>
+  </main>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
-<script src="assets/js/functions-min.js"></script>
+  <svg class="hero-magnifier-filters" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <filter id="hero-magnifier-lens" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+        <!-- Map from hero-magnifier.js; feDisplacementMap @ scale pairs with canvas map amplitude -->
+        <feImage id="hero-magnifier-lens-map" result="lensmap" x="0" y="0" width="184" height="184" preserveAspectRatio="none" />
+        <feDisplacementMap in="SourceGraphic" in2="lensmap" scale="20" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <aside class="drawer drawer--left" id="panel-projects" role="dialog" aria-modal="true" aria-labelledby="drawer-projects-title" hidden>
+    <div class="drawer__toolbar">
+      <h2 class="drawer__title" id="drawer-projects-title">Works</h2>
+      <button type="button" class="text-btn drawer__close" data-close="projects" aria-label="Back">← Back</button>
+    </div>
+    <div class="drawer__body drawer__body--scroll">
+      <ul class="project-list">
+        <li>
+          <a class="project-card" href="inner/Resume.html">
+            <div class="project-card__thumb" aria-hidden="true">
+              <img src="assets/img/resume-logo.png" width="120" height="120" alt="">
+            </div>
+            <div class="project-card__text">
+              <h3 class="project-card__title">Resume</h3>
+              <p class="project-card__desc">A website version of my résumé — experience, education, and contact in one place, styled as a newspaper.</p>
+              <span class="project-card__id">DOC_001</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="project-card" href="https://varunramakri7.github.io/BottomGun/" target="_blank" rel="noopener noreferrer">
+            <div class="project-card__thumb" aria-hidden="true">
+              <img src="assets/img/bottomgun-logo.png" width="240" height="240" alt="">
+            </div>
+            <div class="project-card__text">
+              <h3 class="project-card__title">BottomGun</h3>
+              <p class="project-card__desc">An "infinite flyer" game I made to learn WebGL and Three.js.</p>
+              <span class="project-card__id">DOC_002</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="project-card" href="https://github.com/VarunRamakri7" target="_blank" rel="noopener noreferrer">
+            <div class="project-card__thumb project-card__thumb--github" aria-hidden="true">
+              <img src="assets/img/github-logo.jpg" width="240" height="240" alt="">
+            </div>
+            <div class="project-card__text">
+              <h3 class="project-card__title">GitHub</h3>
+              <p class="project-card__desc">Repositories spanning games, graphics, simulation, and related experiments.</p>
+              <span class="project-card__id">DOC_003</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="project-card" href="https://store.steampowered.com/app/1269250/War_Smith/" target="_blank" rel="noopener noreferrer">
+            <div class="project-card__thumb" aria-hidden="true">
+              <img src="assets/img/warsmith-logo.jpg" width="240" height="240" alt="">
+            </div>
+            <div class="project-card__text">
+              <h3 class="project-card__title">War Smith</h3>
+              <p class="project-card__desc">Couch co-op on Steam — I was the Lead Programmer on this shipped title.</p>
+              <span class="project-card__id">DOC_004</span>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <aside class="drawer drawer--right" id="panel-information" role="dialog" aria-modal="true" aria-labelledby="info-gothic-title" hidden>
+    <div class="drawer__toolbar">
+      <button type="button" class="text-btn" data-close="information" aria-label="Close">Close →</button>
+    </div>
+    <div class="drawer__body drawer__body--info">
+      <p class="info__serial">000001—SF CA</p>
+      <h2 class="info__gothic" id="info-gothic-title">About.</h2>
+      <p class="info__body">
+        I'm a software engineer with a passion for creative creation. I'm currently a Software Engineer at PlayStation with an emphasis on security.
+        I'm also a big fan of graphics, games, and web dev. In my free time I like to take photos, hike, consume and create media.
+      </p>
+    </div>
+  </aside>
+
+  <div class="theme-toggle-cluster">
+    <div class="theme-effect-toggles" role="group" aria-label="Cursor effects">
+      <button type="button" class="theme-effect-toggle" id="effect-toggle-cursor-invert" aria-pressed="false" aria-label="Toggle cursor color inversion" title="Cursor inversion">
+        <span class="theme-effect-toggle__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>
+        </span>
+      </button>
+      <button type="button" class="theme-effect-toggle" id="effect-toggle-hero-magnifier" aria-pressed="true" aria-label="Toggle hero text magnifier" title="Hero magnifier">
+        <span class="theme-effect-toggle__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </span>
+      </button>
+    </div>
+    <button type="button" class="theme-toggle" aria-label="Switch theme" aria-pressed="false">
+      <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </span>
+      <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+  </div>
+
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/theme.js" defer></script>
+  <script src="assets/js/effects-ui.js" defer></script>
+  <script src="assets/js/hero-spheres.js" defer></script>
+  <script src="assets/js/hero-magnifier.js" defer></script>
+  <script src="assets/js/cursor-invert.js" defer></script>
 </body>
 </html>
