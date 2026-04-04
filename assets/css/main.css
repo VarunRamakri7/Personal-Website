@@ -794,14 +794,19 @@ html[data-theme="light"] .project-card__thumb--github img {
   transform: translateY(0);
 }
 
-/* No primary hover (touch): keep toggles visible so they are reachable */
-@media (hover: none) {
+/* Touch / tablet / no fine pointer: same condition as cursor-invert + hero-magnifier (no cursor effects) */
+@media (hover: none), not (pointer: fine) {
   .theme-effect-toggles {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
+}
+
+.theme-toggle-cluster--effects-unavailable .theme-effect-toggles {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .theme-effect-toggle {
