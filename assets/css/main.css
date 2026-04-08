@@ -1,13 +1,13 @@
 /* === Design tokens === */
 :root {
-  /* Fiord & Pear — dark (primary text on background ≈ WCAG AA 5.3:1) */
-  --color-bg: #465166;
-  --color-bg-elevated: #505c73;
-  --color-text: #e0d730;
-  --color-text-muted: rgba(224, 215, 48, 0.72);
-  --color-link: #e0d730;
-  --color-accent: #e0d730;
-  --color-border: rgba(224, 215, 48, 0.14);
+  /* Blackcurrant & Moon Raker — dark */
+  --color-bg: #3c2a44;
+  --color-bg-elevated: #483652;
+  --color-text: #d2d0f6;
+  --color-text-muted: rgba(210, 208, 246, 0.72);
+  --color-link: #d2d0f6;
+  --color-accent: #d2d0f6;
+  --color-border: rgba(210, 208, 246, 0.14);
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-gothic: "Major Mono Display", "Times New Roman", serif;
   --font-display: var(--font-sans);
@@ -17,7 +17,7 @@
   --shadow-drawer: 0 0 80px rgba(0, 0, 0, 0.45);
   /* Full-screen scrim when docks open — light blur only (heavy blur was flattening the hero canvas) */
   --drawer-scrim-blur: 5px;
-  --drawer-toolbar-divider: rgba(224, 215, 48, 0.12);
+  --drawer-toolbar-divider: rgba(210, 208, 246, 0.12);
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
   color-scheme: dark;
@@ -974,8 +974,8 @@ html[data-theme="light"] .theme-toggle__icon--moon {
   --resume-topbar-bg: rgba(18, 18, 18, 0.92);
   /* Hairlines: light on dark page (black would disappear on charcoal). */
   --resume-rule: rgba(255, 255, 255, 0.5);
-  /* Distinct from body Pear — sky on Fiord (AA on #465166) */
-  --resume-article-link: #7dd3fc;
+  /* Distinct from body copy — lighter Moon Raker on Blackcurrant */
+  --resume-article-link: #e8e6fc;
   margin: 0;
   min-height: 100vh;
   padding-bottom: 80px;
