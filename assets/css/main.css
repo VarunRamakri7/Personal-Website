@@ -9,7 +9,7 @@
   --color-accent: #e0d730;
   --color-border: rgba(224, 215, 48, 0.14);
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-gothic: "UnifrakturMaguntia", "Times New Roman", serif;
+  --font-gothic: "Major Mono Display", "Times New Roman", serif;
   --font-display: var(--font-sans);
   --radius-drawer: 20px;
   --drawer-dock-inset: clamp(12px, 2.5vw, 24px);
