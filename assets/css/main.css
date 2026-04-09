@@ -21,7 +21,7 @@
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
   color-scheme: dark;
-  /* Hero copy: subtle tilt toward viewer (paired with magnifier clone below) */
+  /* Hero copy: subtle tilt toward viewer */
   --hero-text-perspective: 1200px;
   --hero-text-rotate-x: 3.25deg;
   /* Hero: lifted type — stacked rim + contact + deep drop + ambient (strong) */
@@ -262,24 +262,6 @@ body.drawer-active--information #btn-information.text-btn {
   backface-visibility: hidden;
 }
 
-/* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
-#hero-magnifier-source.hero-magnifier-source--masked {
-  mask-origin: border-box;
-  -webkit-mask-origin: border-box;
-  -webkit-mask-image: radial-gradient(
-    circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
-    rgba(255, 255, 255, 0) calc(var(--hero-magnifier-r, 92px) - 1px),
-    rgba(255, 255, 255, 1) calc(var(--hero-magnifier-r, 92px) + 0.5px)
-  );
-  mask-image: radial-gradient(
-    circle var(--hero-magnifier-r, 92px) at var(--mask-x, 0px) var(--mask-y, 0px),
-    rgba(255, 255, 255, 0) calc(var(--hero-magnifier-r, 92px) - 1px),
-    rgba(255, 255, 255, 1) calc(var(--hero-magnifier-r, 92px) + 0.5px)
-  );
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-}
-
 .hero__name {
   margin: 0;
   font-family: var(--font-gothic);
@@ -353,174 +335,6 @@ body.drawer-active--information #btn-information.text-btn {
 
 @media (prefers-reduced-motion: reduce) {
   .hero__text {
-    transform: none;
-    transform-style: flat;
-  }
-}
-
-/* Hero magnifier clone (outside .hero) — match landing typography + theme tokens */
-/* Non-zero size so filter defs don’t resolve % against a 0×0 SVG viewport in edge cases */
-.hero-magnifier-filters {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.hero-magnifier {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 10059;
-  width: 184px;
-  height: 184px;
-  margin: 0;
-  padding: 0;
-  pointer-events: none !important;
-  opacity: 0;
-  transition: opacity 0.12s ease;
-  contain: layout paint;
-  /* Clip the whole stack to a circle: SVG filter output can show a square tile when nothing sits above (e.g. inversion off). */
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.hero-magnifier.hero-magnifier--on {
-  opacity: 1;
-}
-
-body.drawer-active .hero-magnifier {
-  opacity: 0 !important;
-}
-
-.hero-magnifier__viewport {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  clip-path: circle(50% at 50% 50%);
-  filter: url(#hero-magnifier-lens);
-  /* Dark theme: rim + lift (light theme overrides below) */
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-    inset 0 0 22px rgba(255, 255, 255, 0.08),
-    0 8px 32px rgba(0, 0, 0, 0.45),
-    0 2px 12px rgba(0, 0, 0, 0.35);
-}
-
-/* Glass rim + shading (not inside SVG filter); dark + light variants — light from upper-left */
-.hero-magnifier::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: 50%;
-  pointer-events: none;
-  display: block;
-  background:
-    radial-gradient(ellipse 78% 48% at 28% 22%, rgba(255, 255, 255, 0.48) 0%, transparent 54%),
-    radial-gradient(ellipse 100% 72% at 72% 118%, rgba(0, 0, 0, 0.42) 0%, transparent 50%),
-    linear-gradient(
-      210deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      transparent 38%,
-      rgba(0, 0, 0, 0.18) 72%,
-      rgba(0, 0, 0, 0.26) 100%
-    );
-  box-shadow:
-    inset 0 0 0 1.5px rgba(255, 255, 255, 0.34),
-    inset 8px 10px 18px rgba(255, 255, 255, 0.18),
-    inset -10px -14px 30px rgba(0, 0, 0, 0.42);
-}
-
-html[data-theme="light"] .hero-magnifier::after {
-  background:
-    radial-gradient(ellipse 78% 48% at 28% 22%, rgba(255, 255, 255, 0.58) 0%, transparent 54%),
-    radial-gradient(ellipse 100% 72% at 72% 118%, rgba(3, 22, 40, 0.14) 0%, transparent 50%),
-    linear-gradient(
-      210deg,
-      rgba(255, 255, 255, 0.26) 0%,
-      transparent 38%,
-      rgba(3, 22, 40, 0.06) 72%,
-      rgba(3, 22, 40, 0.1) 100%
-    );
-  box-shadow:
-    inset 0 0 0 1.5px rgba(3, 22, 40, 0.38),
-    inset 7px 9px 16px rgba(255, 255, 255, 0.52),
-    inset -9px -12px 26px rgba(3, 22, 40, 0.12);
-}
-
-html[data-theme="light"] .hero-magnifier__viewport {
-  box-shadow:
-    inset 0 0 0 1px rgba(3, 22, 40, 0.18),
-    inset 0 0 20px rgba(3, 22, 40, 0.04),
-    0 8px 32px rgba(3, 22, 40, 0.2),
-    0 2px 12px rgba(3, 22, 40, 0.12);
-}
-
-.hero-magnifier__sheet {
-  position: absolute;
-  left: 0;
-  top: 0;
-  will-change: transform;
-}
-
-.hero-magnifier .hero__text {
-  gap: clamp(1.25rem, 4vh, 2.5rem);
-  transform: perspective(var(--hero-text-perspective)) rotateX(var(--hero-text-rotate-x));
-  transform-origin: center 40%;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-.hero-magnifier .hero__name {
-  margin: 0;
-  font-family: var(--font-gothic);
-  font-size: clamp(2.5rem, 8vw + 1rem, 5rem);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: 0.035em;
-  max-width: 100%;
-  color: var(--color-text);
-  text-shadow: var(--hero-name-shadow);
-}
-
-.hero-magnifier .hero__line {
-  margin: 0;
-  font-family: var(--font-sans);
-  letter-spacing: 0.04em;
-  max-width: 32ch;
-  color: var(--color-text);
-}
-
-.hero-magnifier .hero__line--primary {
-  font-size: clamp(1.25rem, 2.5vw + 0.75rem, 2rem);
-  font-weight: 600;
-  text-shadow: var(--hero-line-primary-shadow);
-}
-
-.hero-magnifier .hero__line--secondary {
-  font-size: clamp(0.95rem, 1.2vw + 0.75rem, 1.125rem);
-  color: var(--color-text-muted);
-  font-weight: 500;
-  letter-spacing: 0.045em;
-  text-shadow: var(--hero-line-secondary-shadow);
-}
-
-/* Slight edge chromatic fringing (lens), not applied to blend lens above */
-.hero-magnifier__clone {
-  text-shadow:
-    0.4px 0 0 rgba(255, 100, 120, 0.22),
-    -0.4px 0 0 rgba(80, 200, 255, 0.2);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-magnifier {
-    display: none !important;
-  }
-
-  .hero-magnifier .hero__text {
     transform: none;
     transform-style: flat;
   }
@@ -837,7 +651,7 @@ html[data-theme="light"] .project-card__thumb--github img {
   margin-right: auto;
 }
 
-/* Theme toggle + hover-revealed effect toggles (fixed cluster) */
+/* Theme toggle (fixed) */
 .theme-toggle-cluster {
   position: fixed;
   bottom: 22px;
@@ -847,104 +661,6 @@ html[data-theme="light"] .project-card__thumb--github img {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-}
-
-.theme-effect-toggles {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  order: -1;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(8px);
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    visibility 0.2s;
-}
-
-.theme-toggle-cluster:hover .theme-effect-toggles,
-.theme-toggle-cluster:focus-within .theme-effect-toggles {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-/* Touch / tablet / no fine pointer: same condition as cursor-invert + hero-magnifier (no cursor effects) */
-@media (hover: none), not (pointer: fine) {
-  .theme-effect-toggles {
-    display: none !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
-  }
-}
-
-.theme-toggle-cluster--effects-unavailable .theme-effect-toggles {
-  display: none !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-
-.theme-effect-toggle {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(250, 248, 245, 0.94);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1a1a1a;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast),
-    opacity var(--transition-fast);
-  padding: 0;
-  margin: 0;
-}
-
-.theme-effect-toggle:hover {
-  transform: scale(1.06);
-  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-
-.theme-effect-toggle:active {
-  transform: scale(0.97);
-}
-
-.theme-effect-toggle:focus-visible {
-  outline: 2px solid var(--color-link);
-  outline-offset: 3px;
-}
-
-.theme-effect-toggle--off {
-  opacity: 0.52;
-}
-
-.theme-effect-toggle__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-html[data-theme="light"] .theme-effect-toggle {
-  border: 1px solid rgba(3, 22, 40, 0.45);
-  background: rgba(3, 22, 40, 0.94);
-  box-shadow: 0 10px 40px rgba(3, 22, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  color: #d8dfe2;
-}
-
-html[data-theme="light"] .theme-effect-toggle:hover {
-  box-shadow: 0 12px 48px rgba(3, 22, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-html[data-theme="light"] .theme-effect-toggle:active {
-  transform: scale(0.97);
 }
 
 /* Theme toggle: control colors invert the page (light chip on dark site, dark chip on light site). */
@@ -1029,14 +745,8 @@ html[data-theme="light"] .theme-toggle__icon--moon {
     backdrop-filter: none;
   }
 
-  .theme-effect-toggles {
-    transition-duration: 0.01ms;
-  }
-
   .theme-toggle:hover,
-  .theme-toggle:active,
-  .theme-effect-toggle:hover,
-  .theme-effect-toggle:active {
+  .theme-toggle:active {
     transform: none;
   }
 
@@ -1607,99 +1317,7 @@ html[data-theme="light"] .page-resume .resume-profile .resume-photo-wrap::after 
   margin-bottom: 0;
 }
 
-/* --- Custom cursor: circular lens inverts colors beneath (fine pointers only) --- */
-html.has-cursor-invert {
-  --cursor-invert-radius: 100px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  /* Default: hide system cursor; interactive elements restore pointer/text so hit targets behave normally. */
-  html.has-cursor-invert,
-  html.has-cursor-invert * {
-    cursor: none !important;
-  }
-
-  html.has-cursor-invert a[href],
-  html.has-cursor-invert button,
-  html.has-cursor-invert [type="button"],
-  html.has-cursor-invert [type="submit"],
-  html.has-cursor-invert [role="button"],
-  html.has-cursor-invert label[for],
-  html.has-cursor-invert select,
-  html.has-cursor-invert summary {
-    cursor: pointer !important;
-  }
-
-  html.has-cursor-invert input:not([type="hidden"]),
-  html.has-cursor-invert textarea {
-    cursor: text !important;
-  }
-
-  .cursor-invert {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 10060;
-    width: calc(var(--cursor-invert-radius) * 2);
-    height: calc(var(--cursor-invert-radius) * 2);
-    border-radius: 50%;
-    /* Hard clip so mix-blend-mode does not show the element’s square bounds (esp. light theme). */
-    clip-path: circle(50% at 50% 50%);
-    background: #fff;
-    mix-blend-mode: difference;
-    pointer-events: none !important;
-    user-select: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    /* Do not capture hits; events reach elements below across the full lens area. */
-  }
-
-  .cursor-invert.cursor-invert--on {
-    opacity: 1;
-  }
-
-  /* Drawers open: hide only the invert lens; normal OS cursor returns (not cursor: none). */
-  body.drawer-active .cursor-invert {
-    opacity: 0 !important;
-    transition: opacity 0.22s ease;
-  }
-
-  /* Drawers open: default arrow everywhere (incl. dock padding / empty flex space); revert can fail there. */
-  html.has-cursor-invert body.drawer-active,
-  html.has-cursor-invert body.drawer-active * {
-    cursor: auto !important;
-  }
-
-  html.has-cursor-invert body.drawer-active a[href],
-  html.has-cursor-invert body.drawer-active a[href] *,
-  html.has-cursor-invert body.drawer-active button,
-  html.has-cursor-invert body.drawer-active [type="button"],
-  html.has-cursor-invert body.drawer-active [type="submit"],
-  html.has-cursor-invert body.drawer-active [role="button"],
-  html.has-cursor-invert body.drawer-active label[for],
-  html.has-cursor-invert body.drawer-active select,
-  html.has-cursor-invert body.drawer-active summary {
-    cursor: pointer !important;
-  }
-
-  html.has-cursor-invert body.drawer-active input:not([type="hidden"]),
-  html.has-cursor-invert body.drawer-active textarea {
-    cursor: text !important;
-  }
-}
-
 @media print {
-  html.has-cursor-invert,
-  html.has-cursor-invert * {
-    cursor: auto !important;
-  }
-
-  .cursor-invert,
-  .hero-magnifier,
-  .hero-magnifier-filters {
-    display: none !important;
-  }
-
   .resume-topbar,
   .resume-skip,
   .theme-toggle-cluster {

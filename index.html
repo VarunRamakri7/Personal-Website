@@ -47,7 +47,7 @@
     <div class="hero__bg" aria-hidden="true">
       <canvas class="hero__spheres-canvas" width="800" height="600"></canvas>
     </div>
-    <div class="hero__text" id="hero-magnifier-source">
+    <div class="hero__text">
       <h1 class="hero__name">
         <span class="hero__name-line">VARUN RAMAKRISHNAN</span>
       </h1>
@@ -55,16 +55,6 @@
       <p class="hero__line hero__line--secondary">Platform & Tools, Graphics, Games</p>
     </div>
   </main>
-
-  <svg class="hero-magnifier-filters" aria-hidden="true" focusable="false" width="0" height="0">
-    <defs>
-      <filter id="hero-magnifier-lens" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
-        <!-- Map from hero-magnifier.js; feDisplacementMap @ scale pairs with canvas map amplitude -->
-        <feImage id="hero-magnifier-lens-map" result="lensmap" x="0" y="0" width="184" height="184" preserveAspectRatio="none" />
-        <feDisplacementMap in="SourceGraphic" in2="lensmap" scale="20" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-  </svg>
 
   <aside class="drawer drawer--left" id="panel-projects" role="dialog" aria-modal="true" aria-labelledby="drawer-projects-title" hidden>
     <div class="drawer__toolbar">
@@ -140,18 +130,6 @@
   </aside>
 
   <div class="theme-toggle-cluster">
-    <div class="theme-effect-toggles" role="group" aria-label="Cursor effects">
-      <button type="button" class="theme-effect-toggle" id="effect-toggle-cursor-invert" aria-pressed="false" aria-label="Toggle cursor color inversion" title="Cursor inversion">
-        <span class="theme-effect-toggle__icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>
-        </span>
-      </button>
-      <button type="button" class="theme-effect-toggle" id="effect-toggle-hero-magnifier" aria-pressed="true" aria-label="Toggle hero text magnifier" title="Hero magnifier">
-        <span class="theme-effect-toggle__icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        </span>
-      </button>
-    </div>
     <button type="button" class="theme-toggle" aria-label="Switch theme" aria-pressed="false">
       <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -164,9 +142,6 @@
 
   <script src="assets/js/site.js" defer></script>
   <script src="assets/js/theme.js" defer></script>
-  <script src="assets/js/effects-ui.js" defer></script>
   <script src="assets/js/hero-spheres.js" defer></script>
-  <script src="assets/js/hero-magnifier.js" defer></script>
-  <script src="assets/js/cursor-invert.js" defer></script>
 </body>
 </html>
