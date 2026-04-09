@@ -9,6 +9,9 @@
  *   draw() — ctx.lineWidth, persp, scale multiplier (Math.min(w,h) * 0.45), and rotation speed from each sphere’s srx/sry/srz.
  *   dpr — capped at 2 for performance (devicePixelRatio).
  * Geometry: rawVerts/faces/edges define the mesh; change only if you want a different polyhedron.
+ *
+ * Performance: tab background → animation stops (visibility). Narrow / coarse-pointer viewports use
+ * lower DPR, fewer stars/motes, 4 meshes, no wireframe glow pass, ~30fps cadence.
  */
 (function () {
   var canvas = document.querySelector(".hero__spheres-canvas");
@@ -21,6 +24,20 @@
   try {
     reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   } catch (e) {}
+
+  /** Fewer meshes / particles / pixels on phones & tablets — keeps CPU/GPU cool */
+  function isBudgetGraphics() {
+    try {
+      if (window.matchMedia("(max-width: 640px)").matches) return true;
+      if (
+        window.matchMedia("(pointer: coarse)").matches &&
+        window.matchMedia("(max-width: 1024px)").matches
+      ) {
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
 
   var phi = (1 + Math.sqrt(5)) / 2;
   var rawVerts = [
@@ -136,7 +153,11 @@
   var sphereGenW = 0;
   var sphereGenH = 0;
 
-  var TARGET_COUNT = 6;
+  var MESH_COUNT_FULL = 6;
+  var MESH_COUNT_BUDGET = 4;
+  function getMeshTargetCount() {
+    return isBudgetGraphics() ? MESH_COUNT_BUDGET : MESH_COUNT_FULL;
+  }
   /** Keep icosahedra inset from edges (fraction of half-width / half-height); increase for more margin. */
   var EDGE_MARGIN = 0.07;
   /** Min separation between centers in px — scales with projected mesh size. */
@@ -160,12 +181,13 @@
    * Falls back to a jittered hex-ish grid if rejection sampling stalls.
    */
   function generateSpheres(w, h) {
+    var targetN = getMeshTargetCount();
     var placed = [];
     var maxAttempts = 900;
     var attempts = 0;
     var halfInset = 0.5 - EDGE_MARGIN;
 
-    while (placed.length < TARGET_COUNT && attempts < maxAttempts) {
+    while (placed.length < targetN && attempts < maxAttempts) {
       attempts++;
       var r = 0.3 + Math.random() * 0.2;
       var nx = (Math.random() - 0.5) * 2 * halfInset;
@@ -193,8 +215,8 @@
       }
     }
 
-    /* Grid fallback: deterministic slots around the hero so we always show TARGET_COUNT */
-    if (placed.length < TARGET_COUNT) {
+    /* Grid fallback: deterministic slots around the hero so we always show targetN */
+    if (placed.length < targetN) {
       var slots = [
         { nx: -0.34, ny: -0.28 },
         { nx: 0.34, ny: -0.22 },
@@ -206,7 +228,7 @@
         { nx: 0, ny: 0.36 },
       ];
       var rs = [0.36, 0.38, 0.34, 0.4, 0.33, 0.37];
-      for (var s = 0; s < slots.length && placed.length < TARGET_COUNT; s++) {
+      for (var s = 0; s < slots.length && placed.length < targetN; s++) {
         var jitter = 0.04;
         var cand = {
           nx: slots[s].nx + (Math.random() - 0.5) * jitter,
@@ -240,7 +262,7 @@
 
     /* Tighter packing if still short — smaller meshes, relaxed separation */
     var extraAttempts = 0;
-    while (placed.length < TARGET_COUNT && extraAttempts < 1200) {
+    while (placed.length < targetN && extraAttempts < 1200) {
       extraAttempts++;
       var rSmall = 0.26 + Math.random() * 0.14;
       var nx2 = (Math.random() - 0.5) * 2 * halfInset;
@@ -271,17 +293,22 @@
     return placed;
   }
 
+  var sphereBudgetTier = null;
+
   function maybeRegenerateSpheres(w, h) {
     if (w < 24 || h < 24) return;
+    var tier = isBudgetGraphics();
     var need =
       spheres.length === 0 ||
       !sphereGenW ||
       Math.abs(w - sphereGenW) / sphereGenW > 0.14 ||
-      Math.abs(h - sphereGenH) / sphereGenH > 0.14;
+      Math.abs(h - sphereGenH) / sphereGenH > 0.14 ||
+      sphereBudgetTier !== tier;
     if (need) {
       spheres = generateSpheres(w, h);
       sphereGenW = w;
       sphereGenH = h;
+      sphereBudgetTier = tier;
     }
   }
 
@@ -352,7 +379,12 @@
   function regenerateAtmosphere(w, h) {
     if (w < 24 || h < 24) return;
     stars = [];
-    var n = Math.min(220, Math.max(48, Math.floor((w * h / 1e6) * STAR_DENSITY)));
+    var budget = isBudgetGraphics();
+    var densityScale = budget ? 0.42 : 1;
+    var n = Math.min(
+      220,
+      Math.max(budget ? 28 : 48, Math.floor((w * h / 1e6) * STAR_DENSITY * densityScale))
+    );
     for (var i = 0; i < n; i++) {
       var roll = Math.random();
       var r;
@@ -380,7 +412,9 @@
       });
     }
     motes = [];
-    var mn = Math.floor(MOTE_COUNT_MIN + Math.random() * (MOTE_COUNT_MAX - MOTE_COUNT_MIN));
+    var mMin = budget ? 8 : MOTE_COUNT_MIN;
+    var mMax = budget ? 20 : MOTE_COUNT_MAX;
+    var mn = Math.floor(mMin + Math.random() * (mMax - mMin));
     for (var m = 0; m < mn; m++) {
       var mr = Math.random();
       var rad = mr < 0.42 ? 0.22 + Math.random() * 0.58 : mr < 0.8 ? 0.72 + Math.random() * 1.15 : 1.65 + Math.random() * 1.45;
@@ -400,14 +434,21 @@
     atmoH = h;
   }
 
+  var atmoBudgetTier = null;
+
   function maybeRegenerateAtmosphere(w, h) {
     if (w < 24 || h < 24) return;
+    var tier = isBudgetGraphics();
     var need =
       stars.length === 0 ||
       !atmoW ||
       Math.abs(w - atmoW) / atmoW > 0.14 ||
-      Math.abs(h - atmoH) / atmoH > 0.14;
-    if (need) regenerateAtmosphere(w, h);
+      Math.abs(h - atmoH) / atmoH > 0.14 ||
+      atmoBudgetTier !== tier;
+    if (need) {
+      regenerateAtmosphere(w, h);
+      atmoBudgetTier = tier;
+    }
   }
 
   function drawSolidBackdrop(w, h) {
@@ -643,7 +684,8 @@
 
   function resize() {
     var rect = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var maxDpr = isBudgetGraphics() ? 1.25 : 2;
+    dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
     canvas.width = Math.floor(rect.width * dpr);
     canvas.height = Math.floor(rect.height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -681,6 +723,7 @@
     ctx.lineCap = "round";
     var scale = Math.min(w, h) * 0.45;
     var persp = 2.5;
+    var budget = isBudgetGraphics();
     var glowW = isLightTheme() ? 7.1 : 5.6;
     var coreW = isLightTheme() ? 3.18 : 3.05;
 
@@ -702,18 +745,20 @@
         var pa = project(va, cx, cy, rScale, persp);
         var pb = project(vb, cx, cy, rScale, persp);
 
-        ctx.strokeStyle = vertexEdgeGlowRgba(va, vb);
-        ctx.lineWidth = glowW;
-        ctx.beginPath();
-        ctx.moveTo(pa[0], pa[1]);
-        ctx.lineTo(pb[0], pb[1]);
-        ctx.stroke();
+        if (!budget) {
+          ctx.strokeStyle = vertexEdgeGlowRgba(va, vb);
+          ctx.lineWidth = glowW;
+          ctx.beginPath();
+          ctx.moveTo(pa[0], pa[1]);
+          ctx.lineTo(pb[0], pb[1]);
+          ctx.stroke();
+        }
 
         var grd = ctx.createLinearGradient(pa[0], pa[1], pb[0], pb[1]);
         grd.addColorStop(0, vertexLitRgba(va, t));
         grd.addColorStop(1, vertexLitRgba(vb, t));
         ctx.strokeStyle = grd;
-        ctx.lineWidth = coreW;
+        ctx.lineWidth = budget ? coreW * 1.05 : coreW;
         ctx.beginPath();
         ctx.moveTo(pa[0], pa[1]);
         ctx.lineTo(pb[0], pb[1]);
@@ -722,11 +767,31 @@
     }
   }
 
+  var heroAnimRaf = 0;
+  /** Alternate frames at ~30fps on budget devices (phase starts true → first callback draws). */
+  var budgetSkipPhase = true;
+
   function frame() {
+    if (document.hidden) {
+      heroAnimRaf = 0;
+      return;
+    }
+    if (isBudgetGraphics()) {
+      budgetSkipPhase = !budgetSkipPhase;
+      if (budgetSkipPhase) {
+        heroAnimRaf = window.requestAnimationFrame(frame);
+        return;
+      }
+    }
     draw();
     if (!reducedMotion) {
-      requestAnimationFrame(frame);
+      heroAnimRaf = window.requestAnimationFrame(frame);
     }
+  }
+
+  function startHeroAnimationLoop() {
+    if (reducedMotion || heroAnimRaf) return;
+    heroAnimRaf = window.requestAnimationFrame(frame);
   }
 
   resize();
@@ -738,13 +803,26 @@
     draw();
   });
 
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      if (heroAnimRaf) {
+        window.cancelAnimationFrame(heroAnimRaf);
+        heroAnimRaf = 0;
+      }
+    } else if (!reducedMotion) {
+      startHeroAnimationLoop();
+    }
+  });
+
   if (reducedMotion) {
     draw();
   } else {
-    requestAnimationFrame(frame);
+    startHeroAnimationLoop();
   }
 
   new MutationObserver(function () {
-    draw();
+    if (!document.hidden) {
+      draw();
+    }
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 })();

@@ -220,6 +220,7 @@
 
   function frame() {
     raf = 0;
+    if (document.hidden) return;
     if (!pending) return;
     var mx = pending[0];
     var my = pending[1];
