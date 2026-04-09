@@ -21,6 +21,9 @@
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
   color-scheme: dark;
+  /* Hero copy: subtle tilt toward viewer (paired with magnifier clone below) */
+  --hero-text-perspective: 1200px;
+  --hero-text-rotate-x: 3.25deg;
   /* Hero: lifted type — stacked rim + contact + deep drop + ambient (strong) */
   --hero-name-shadow:
     0 1px 0 rgba(255, 255, 255, 0.18),
@@ -253,6 +256,10 @@ body.drawer-active--information #btn-information.text-btn {
   text-align: center;
   gap: clamp(1.25rem, 4vh, 2.5rem);
   text-rendering: geometricPrecision;
+  transform: perspective(var(--hero-text-perspective)) rotateX(var(--hero-text-rotate-x));
+  transform-origin: center 40%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 /* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
@@ -324,15 +331,22 @@ body.drawer-active--information #btn-information.text-btn {
 
 @media (prefers-reduced-motion: no-preference) {
   .page-home .hero__name {
-    animation: hero-content-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation: hero-content-in 1.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .page-home .hero__line--primary {
-    animation: hero-content-in 0.7s 0.08s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation: hero-content-in 1.35s 0.16s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .page-home .hero__line--secondary {
-    animation: hero-content-in 0.65s 0.16s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation: hero-content-in 1.25s 0.32s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__text {
+    transform: none;
+    transform-style: flat;
   }
 }
 
@@ -446,6 +460,10 @@ html[data-theme="light"] .hero-magnifier__viewport {
 
 .hero-magnifier .hero__text {
   gap: clamp(1.25rem, 4vh, 2.5rem);
+  transform: perspective(var(--hero-text-perspective)) rotateX(var(--hero-text-rotate-x));
+  transform-origin: center 40%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .hero-magnifier .hero__name {
@@ -492,6 +510,11 @@ html[data-theme="light"] .hero-magnifier__viewport {
 @media (prefers-reduced-motion: reduce) {
   .hero-magnifier {
     display: none !important;
+  }
+
+  .hero-magnifier .hero__text {
+    transform: none;
+    transform-style: flat;
   }
 }
 
