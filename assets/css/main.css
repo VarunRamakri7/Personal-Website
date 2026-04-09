@@ -21,6 +21,27 @@
   --transition-drawer: 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.2s ease;
   color-scheme: dark;
+  /* Hero: lifted type — stacked rim + contact + deep drop + ambient (strong) */
+  --hero-name-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18),
+    0 2px 0 rgba(0, 0, 0, 0.32),
+    0 3px 2px rgba(0, 0, 0, 0.28),
+    0 8px 20px rgba(0, 0, 0, 0.52),
+    0 16px 44px rgba(0, 0, 0, 0.42),
+    0 28px 72px rgba(0, 0, 0, 0.28),
+    0 0 88px rgba(210, 208, 246, 0.26),
+    0 0 160px rgba(180, 160, 220, 0.12);
+  --hero-line-primary-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 0 rgba(0, 0, 0, 0.28),
+    0 4px 10px rgba(0, 0, 0, 0.52),
+    0 10px 28px rgba(0, 0, 0, 0.4),
+    0 20px 48px rgba(0, 0, 0, 0.26);
+  --hero-line-secondary-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 2px rgba(0, 0, 0, 0.48),
+    0 5px 16px rgba(0, 0, 0, 0.38),
+    0 12px 36px rgba(0, 0, 0, 0.26);
 }
 
 html[data-theme="light"] {
@@ -36,6 +57,22 @@ html[data-theme="light"] {
   --drawer-scrim-blur: 5px;
   --drawer-toolbar-divider: rgba(3, 22, 40, 0.12);
   color-scheme: light;
+  /* Depth without white rims (they read as a harsh outline on blue-on-Geyser) */
+  --hero-name-shadow:
+    0 2px 4px rgba(3, 22, 40, 0.07),
+    0 4px 16px rgba(3, 22, 40, 0.13),
+    0 10px 34px rgba(3, 22, 40, 0.12),
+    0 22px 56px rgba(3, 22, 40, 0.09),
+    0 0 68px rgba(79, 134, 198, 0.26),
+    0 0 115px rgba(79, 134, 198, 0.11);
+  --hero-line-primary-shadow:
+    0 2px 6px rgba(3, 22, 40, 0.1),
+    0 6px 20px rgba(3, 22, 40, 0.12),
+    0 16px 42px rgba(3, 22, 40, 0.09);
+  --hero-line-secondary-shadow:
+    0 2px 5px rgba(3, 22, 40, 0.09),
+    0 8px 20px rgba(3, 22, 40, 0.09),
+    0 16px 38px rgba(3, 22, 40, 0.06);
 }
 
 html[data-theme="light"] body.page-home {
@@ -215,6 +252,7 @@ body.drawer-active--information #btn-information.text-btn {
   align-items: center;
   text-align: center;
   gap: clamp(1.25rem, 4vh, 2.5rem);
+  text-rendering: geometricPrecision;
 }
 
 /* Hide hero copy under the magnifier lens only (clone shows zoomed text there). */
@@ -241,8 +279,10 @@ body.drawer-active--information #btn-information.text-btn {
   font-size: clamp(2.5rem, 8vw + 1rem, 5rem);
   font-weight: 400;
   line-height: 1.05;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.035em;
   max-width: 20ch;
+  color: var(--color-text);
+  text-shadow: var(--hero-name-shadow);
 }
 
 .hero__name-line {
@@ -252,19 +292,23 @@ body.drawer-active--information #btn-information.text-btn {
 .hero__line {
   margin: 0;
   font-family: var(--font-sans);
-  font-weight: 500;
   letter-spacing: 0.04em;
   max-width: 32ch;
 }
 
 .hero__line--primary {
   font-size: clamp(1.25rem, 2.5vw + 0.75rem, 2rem);
+  font-weight: 600;
+  color: var(--color-text);
+  text-shadow: var(--hero-line-primary-shadow);
 }
 
 .hero__line--secondary {
   font-size: clamp(0.95rem, 1.2vw + 0.75rem, 1.125rem);
   color: var(--color-text-muted);
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-shadow: var(--hero-line-secondary-shadow);
 }
 
 @keyframes hero-content-in {
@@ -410,15 +454,15 @@ html[data-theme="light"] .hero-magnifier__viewport {
   font-size: clamp(2.5rem, 8vw + 1rem, 5rem);
   font-weight: 400;
   line-height: 1.05;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.035em;
   max-width: 20ch;
   color: var(--color-text);
+  text-shadow: var(--hero-name-shadow);
 }
 
 .hero-magnifier .hero__line {
   margin: 0;
   font-family: var(--font-sans);
-  font-weight: 500;
   letter-spacing: 0.04em;
   max-width: 32ch;
   color: var(--color-text);
@@ -426,12 +470,16 @@ html[data-theme="light"] .hero-magnifier__viewport {
 
 .hero-magnifier .hero__line--primary {
   font-size: clamp(1.25rem, 2.5vw + 0.75rem, 2rem);
+  font-weight: 600;
+  text-shadow: var(--hero-line-primary-shadow);
 }
 
 .hero-magnifier .hero__line--secondary {
   font-size: clamp(0.95rem, 1.2vw + 0.75rem, 1.125rem);
   color: var(--color-text-muted);
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-shadow: var(--hero-line-secondary-shadow);
 }
 
 /* Slight edge chromatic fringing (lens), not applied to blend lens above */

@@ -5,7 +5,7 @@
  * Tunable:
  *   TARGET_COUNT — how many meshes to place; EDGE_MARGIN — inset from canvas edges (0–0.5 scale).
  *   STAR_DENSITY — stars per megapixel; SHOOTING_STAR_INTERVAL — base seconds between streaks.
- *   lineColor() — stroke rgba for light vs dark theme (reads data-theme).
+ *   Wireframe edges — gradient per edge + specular / Fresnel / shimmer (see vertexLitRgba).
  *   draw() — ctx.lineWidth, persp, scale multiplier (Math.min(w,h) * 0.45), and rotation speed from each sphere’s srx/sry/srz.
  *   dpr — capped at 2 for performance (devicePixelRatio).
  * Geometry: rawVerts/faces/edges define the mesh; change only if you want a different polyhedron.
@@ -536,9 +536,58 @@
     }
   }
 
-  function lineColor() {
-    var light = document.documentElement.getAttribute("data-theme") === "light";
-    return light ? "rgba(42, 82, 145, 0.4)" : "rgba(210, 208, 246, 0.2)";
+  /** Unit light direction (upper-front-right); mesh rotates, so edges catch highlights. */
+  var WF_LD = 1 / Math.hypot(0.45, -0.4, 0.8);
+  var WF_LX = 0.45 * WF_LD;
+  var WF_LY = -0.4 * WF_LD;
+  var WF_LZ = 0.8 * WF_LD;
+
+  function wireframeBaseRgb() {
+    return isLightTheme() ? { r: 42, g: 82, b: 145 } : { r: 210, g: 208, b: 246 };
+  }
+
+  function vertexLitRgba(v, timeSec) {
+    var nx = v[0];
+    var ny = v[1];
+    var nz = v[2];
+    var diff = Math.max(0, nx * WF_LX + ny * WF_LY + nz * WF_LZ);
+    var Vx = 0;
+    var Vy = 0;
+    var Vz = 1;
+    var Hx = WF_LX + Vx;
+    var Hy = WF_LY + Vy;
+    var Hz = WF_LZ + Vz;
+    var hLen = Math.hypot(Hx, Hy, Hz);
+    Hx /= hLen;
+    Hy /= hLen;
+    Hz /= hLen;
+    var nh = Math.max(0, nx * Hx + ny * Hy + nz * Hz);
+    var spec = Math.pow(nh, 40);
+    var fresnel = Math.pow(Math.min(1, 1 - Math.abs(nz)), 1.35) * 0.26;
+    var spark = reducedMotion
+      ? 0
+      : 0.09 * Math.sin(timeSec * 3.4 + nx * 7.1 + ny * 5.3 + nz * 4.2);
+    var br = wireframeBaseRgb();
+    var wMix = Math.min(1, spec * 1.12 + fresnel + diff * 0.2);
+    var r = br.r * (1 - wMix * 0.52) + 255 * wMix * 0.93;
+    var g = br.g * (1 - wMix * 0.48) + 252 * wMix * 0.95;
+    var b = br.b * (1 - wMix * 0.4) + 255 * wMix * 0.97;
+    r = Math.min(255, r + spec * 92 + spark * 45);
+    g = Math.min(255, g + spec * 94 + spark * 42);
+    b = Math.min(255, b + spec * 102 + spark * 48);
+    var baseA = isLightTheme() ? 0.42 : 0.23;
+    var a = baseA * (0.38 + 0.62 * (0.22 + diff * 0.52 + spec * 1.35 + fresnel * 0.9));
+    a = Math.min(0.96, a);
+    return "rgba(" + Math.round(r) + "," + Math.round(g) + "," + Math.round(b) + "," + a.toFixed(3) + ")";
+  }
+
+  function vertexEdgeGlowRgba(va, vb) {
+    var da = Math.max(0, va[0] * WF_LX + va[1] * WF_LY + va[2] * WF_LZ);
+    var db = Math.max(0, vb[0] * WF_LX + vb[1] * WF_LY + vb[2] * WF_LZ);
+    var d = (da + db) * 0.5;
+    var br = wireframeBaseRgb();
+    var a = isLightTheme() ? 0.055 + d * 0.15 : 0.038 + d * 0.12;
+    return "rgba(" + br.r + "," + br.g + "," + br.b + "," + a.toFixed(3) + ")";
   }
 
   function resize() {
@@ -577,11 +626,12 @@
       drawStars(w, h, t, true);
     }
 
-    ctx.strokeStyle = lineColor();
-    ctx.lineWidth = 3.25;
     ctx.lineJoin = "round";
+    ctx.lineCap = "round";
     var scale = Math.min(w, h) * 0.45;
     var persp = 2.5;
+    var glowW = isLightTheme() ? 6.2 : 5.6;
+    var coreW = 3.05;
 
     for (var s = 0; s < spheres.length; s++) {
       var sp = spheres[s];
@@ -594,17 +644,30 @@
       var cy = h * (0.5 + sp.ny);
       var rScale = scale * sp.r;
 
-      ctx.beginPath();
       for (var e = 0; e < edges.length; e++) {
         var ei = edges[e];
         var va = mulMatVec(R, baseVerts[ei[0]]);
         var vb = mulMatVec(R, baseVerts[ei[1]]);
         var pa = project(va, cx, cy, rScale, persp);
         var pb = project(vb, cx, cy, rScale, persp);
+
+        ctx.strokeStyle = vertexEdgeGlowRgba(va, vb);
+        ctx.lineWidth = glowW;
+        ctx.beginPath();
         ctx.moveTo(pa[0], pa[1]);
         ctx.lineTo(pb[0], pb[1]);
+        ctx.stroke();
+
+        var grd = ctx.createLinearGradient(pa[0], pa[1], pb[0], pb[1]);
+        grd.addColorStop(0, vertexLitRgba(va, t));
+        grd.addColorStop(1, vertexLitRgba(vb, t));
+        ctx.strokeStyle = grd;
+        ctx.lineWidth = coreW;
+        ctx.beginPath();
+        ctx.moveTo(pa[0], pa[1]);
+        ctx.lineTo(pb[0], pb[1]);
+        ctx.stroke();
       }
-      ctx.stroke();
     }
   }
 
