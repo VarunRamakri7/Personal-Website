@@ -763,8 +763,8 @@ html[data-theme="light"] .theme-toggle__icon--moon {
   --resume-topbar-bg: rgba(18, 18, 18, 0.92);
   /* Hairlines: light on dark page (black would disappear on charcoal). */
   --resume-rule: rgba(255, 255, 255, 0.5);
-  /* Distinct from body copy — lighter Moon Raker on Blackcurrant */
-  --resume-article-link: #e8e6fc;
+  /* Cool sky — clearly distinct from body copy (--color-text Moon Raker) on Blackcurrant */
+  --resume-article-link: #7ec8ff;
   margin: 0;
   min-height: 100vh;
   padding-bottom: 80px;
@@ -1143,6 +1143,10 @@ html[data-theme="light"] .page-resume .resume-profile .resume-photo-wrap::after 
   text-decoration: none;
 }
 
+.page-resume .resume-meta a {
+  color: var(--resume-article-link);
+}
+
 .resume-meta a:hover {
   text-decoration: underline;
 }
@@ -1171,15 +1175,21 @@ html[data-theme="light"] .page-resume .resume-profile .resume-photo-wrap::after 
     padding: 26px clamp(22px, 2.5vw, 36px) 32px;
   }
 
-  .resume-article:first-child {
-    border-right: 1px solid var(--resume-rule);
+  /* Section break (Work | Education): stronger than 1px rules between timeline entries */
+  .resume-article--work {
+    border-right: 3px double var(--resume-rule);
   }
 }
 
 @media (max-width: 1099px) {
   .resume-article {
     padding: 0 0 8px;
-    border-bottom: 1px solid var(--resume-rule);
+  }
+
+  /* Horizontal section break above Education — matches double rule used in masthead / print borders */
+  .resume-article--work {
+    border-bottom: 3px double var(--resume-rule);
+    padding-bottom: 14px;
   }
 
   .resume-article:last-child {
@@ -1250,7 +1260,7 @@ html[data-theme="light"] .page-resume .resume-profile .resume-photo-wrap::after 
 .resume-article .resume-item li a {
   color: var(--resume-article-link);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--resume-article-link) 55%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--resume-article-link) 72%, transparent);
   text-underline-offset: 0.2em;
 }
 
