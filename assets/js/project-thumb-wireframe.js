@@ -137,7 +137,7 @@
 
   function lineColor() {
     var light = document.documentElement.getAttribute("data-theme") === "light";
-    return light ? "rgba(79, 134, 198, 0.42)" : "rgba(224, 215, 48, 0.28)";
+    return light ? "rgba(79, 134, 198, 0.42)" : "rgba(210, 208, 246, 0.28)";
   }
 
   function project(v, cx, cy, scale, perspective) {

@@ -3,7 +3,7 @@
  *
  * Tunable:
  *   STORAGE_KEY — localStorage key for saved theme ("light" | "dark").
- *   applyTheme() — theme-color hex values (#d8dfe2 light, #465166 dark); keep in sync with design tokens.
+ *   applyTheme() — theme-color hex values (#d8dfe2 light, #3C2A44 dark); keep in sync with design tokens.
  * Behavior: if STORAGE_KEY is unset, initial theme comes from the inline script in index/Resume (prefers-color-scheme);
  *   system scheme changes apply until the user clicks .theme-toggle once (then STORAGE_KEY is set).
  */
@@ -33,7 +33,7 @@
     }
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute("content", theme === "light" ? "#d8dfe2" : "#465166");
+      meta.setAttribute("content", theme === "light" ? "#d8dfe2" : "#3C2A44");
     }
   }
 
