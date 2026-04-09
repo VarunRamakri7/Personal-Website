@@ -287,13 +287,21 @@ body.drawer-active--information #btn-information.text-btn {
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: 0.035em;
-  max-width: 20ch;
+  max-width: 100%;
   color: var(--color-text);
   text-shadow: var(--hero-name-shadow);
 }
 
 .hero__name-line {
   display: block;
+  white-space: nowrap;
+}
+
+/* Only allow wrapping on very narrow viewports where a single line would clip */
+@media (max-width: 320px) {
+  .hero__name-line {
+    white-space: normal;
+  }
 }
 
 .hero__line {
@@ -473,7 +481,7 @@ html[data-theme="light"] .hero-magnifier__viewport {
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: 0.035em;
-  max-width: 20ch;
+  max-width: 100%;
   color: var(--color-text);
   text-shadow: var(--hero-name-shadow);
 }
