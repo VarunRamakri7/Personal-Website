@@ -542,15 +542,38 @@
   var WF_LY = -0.4 * WF_LD;
   var WF_LZ = 0.8 * WF_LD;
 
+  /**
+   * Camera looks along +Z; vertices on the front hemisphere (nz > 0) face the viewer.
+   * Gates specular/glow so the far side of the mesh does not pick up highlights.
+   */
+  function cameraFacingVertex(v) {
+    var nz = v[2];
+    return Math.pow(Math.max(0, nz), 0.52);
+  }
+
+  /** Edge midpoint direction from origin — which side of the sphere this edge faces (+Z = camera). */
+  function cameraFacingEdge(va, vb) {
+    var mx = va[0] + vb[0];
+    var my = va[1] + vb[1];
+    var mz = va[2] + vb[2];
+    var len = Math.hypot(mx, my, mz);
+    if (len < 1e-9) return 0;
+    return Math.pow(Math.max(0, mz / len), 0.52);
+  }
+
   function wireframeBaseRgb() {
     return isLightTheme() ? { r: 42, g: 82, b: 145 } : { r: 210, g: 208, b: 246 };
   }
 
   function vertexLitRgba(v, timeSec) {
+    var light = isLightTheme();
     var nx = v[0];
     var ny = v[1];
     var nz = v[2];
+    var face = cameraFacingVertex(v);
     var diff = Math.max(0, nx * WF_LX + ny * WF_LY + nz * WF_LZ);
+    /* Keep a faint structural read on the back; highlights are view-gated */
+    diff *= 0.14 + 0.86 * face;
     var Vx = 0;
     var Vy = 0;
     var Vz = 1;
@@ -562,31 +585,59 @@
     Hy /= hLen;
     Hz /= hLen;
     var nh = Math.max(0, nx * Hx + ny * Hy + nz * Hz);
-    var spec = Math.pow(nh, 40);
-    var fresnel = Math.pow(Math.min(1, 1 - Math.abs(nz)), 1.35) * 0.26;
+    /* Light: slightly tighter lobe + broad sheen so edges read icy/glassy on pale canvas */
+    var spec = Math.pow(nh, light ? 34 : 40) * face;
+    var specSheen = light ? Math.pow(nh, 11) * 0.22 * face : 0;
+    var fresnel =
+      Math.pow(Math.min(1, 1 - Math.abs(nz)), light ? 1.42 : 1.35) * (light ? 0.4 : 0.26) * face;
     var spark = reducedMotion
       ? 0
-      : 0.09 * Math.sin(timeSec * 3.4 + nx * 7.1 + ny * 5.3 + nz * 4.2);
+      : (light ? 0.15 : 0.09) *
+        Math.sin(timeSec * (light ? 4.2 : 3.4) + nx * 7.1 + ny * 5.3 + nz * 4.2) *
+        face;
     var br = wireframeBaseRgb();
-    var wMix = Math.min(1, spec * 1.12 + fresnel + diff * 0.2);
+    var wMix = Math.min(
+      1,
+      spec * (light ? 1.38 : 1.12) + specSheen + fresnel + diff * (light ? 0.32 : 0.2)
+    );
     var r = br.r * (1 - wMix * 0.52) + 255 * wMix * 0.93;
     var g = br.g * (1 - wMix * 0.48) + 252 * wMix * 0.95;
     var b = br.b * (1 - wMix * 0.4) + 255 * wMix * 0.97;
-    r = Math.min(255, r + spec * 92 + spark * 45);
-    g = Math.min(255, g + spec * 94 + spark * 42);
-    b = Math.min(255, b + spec * 102 + spark * 48);
-    var baseA = isLightTheme() ? 0.42 : 0.23;
-    var a = baseA * (0.38 + 0.62 * (0.22 + diff * 0.52 + spec * 1.35 + fresnel * 0.9));
-    a = Math.min(0.96, a);
+    var specBoost = light ? 112 : 92;
+    r = Math.min(255, r + spec * specBoost + specSheen * (light ? 55 : 0) + spark * (light ? 58 : 45));
+    g = Math.min(255, g + spec * (specBoost + 2) + specSheen * (light ? 52 : 0) + spark * (light ? 54 : 42));
+    b = Math.min(255, b + spec * (specBoost + 14) + specSheen * (light ? 62 : 0) + spark * (light ? 62 : 48));
+    /* Cooler glints on light (sky-ice); spec already view-weighted */
+    if (light) {
+      var ice = spec + specSheen * 0.5;
+      b = Math.min(255, b + ice * 22);
+      g = Math.min(255, g + ice * 10);
+      r = Math.max(0, r - ice * 6);
+    }
+    var baseA = light ? 0.48 : 0.23;
+    var a = light
+      ? baseA * (0.34 + 0.66 * (0.18 + diff * 0.58 + spec * 1.62 + fresnel * 1.05 + specSheen * 0.85))
+      : baseA * (0.38 + 0.62 * (0.22 + diff * 0.52 + spec * 1.35 + fresnel * 0.9));
+    a *= 0.42 + 0.58 * face;
+    a = Math.min(0.97, a);
     return "rgba(" + Math.round(r) + "," + Math.round(g) + "," + Math.round(b) + "," + a.toFixed(3) + ")";
   }
 
   function vertexEdgeGlowRgba(va, vb) {
+    var face = cameraFacingEdge(va, vb);
     var da = Math.max(0, va[0] * WF_LX + va[1] * WF_LY + va[2] * WF_LZ);
     var db = Math.max(0, vb[0] * WF_LX + vb[1] * WF_LY + vb[2] * WF_LZ);
     var d = (da + db) * 0.5;
     var br = wireframeBaseRgb();
-    var a = isLightTheme() ? 0.055 + d * 0.15 : 0.038 + d * 0.12;
+    if (isLightTheme()) {
+      var a = (0.085 + d * 0.26) * face;
+      var lift = 0.45 * d * face;
+      var gr = Math.round(br.r + (248 - br.r) * lift);
+      var gg = Math.round(br.g + (252 - br.g) * lift);
+      var gb = Math.round(br.b + (255 - br.b) * lift);
+      return "rgba(" + gr + "," + gg + "," + gb + "," + a.toFixed(3) + ")";
+    }
+    var a = (0.038 + d * 0.12) * face;
     return "rgba(" + br.r + "," + br.g + "," + br.b + "," + a.toFixed(3) + ")";
   }
 
@@ -630,8 +681,8 @@
     ctx.lineCap = "round";
     var scale = Math.min(w, h) * 0.45;
     var persp = 2.5;
-    var glowW = isLightTheme() ? 6.2 : 5.6;
-    var coreW = 3.05;
+    var glowW = isLightTheme() ? 7.1 : 5.6;
+    var coreW = isLightTheme() ? 3.18 : 3.05;
 
     for (var s = 0; s < spheres.length; s++) {
       var sp = spheres[s];
