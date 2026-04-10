@@ -14,7 +14,7 @@ Static personal site: minimal typography-led home, slide-out **Projects** and **
 | **Markup** | Semantic HTML5 |
 | **Styling** | Single file: `assets/css/main.css` |
 | **Scripts** | Vanilla JS (see table below) |
-| **Fonts** | [Inter](https://fonts.google.com/specimen/Inter) + [UnifrakturMaguntia](https://fonts.google.com/specimen/UnifrakturMaguntia) (blackletter) via Google Fonts |
+| **Fonts** | [Inter](https://fonts.google.com/specimen/Inter) + [Major Mono Display](https://fonts.google.com/specimen/Major+Mono+Display) (hero name) via Google Fonts (`display=swap`) |
 
 ## JavaScript modules
 
@@ -52,3 +52,15 @@ assets/
 ## Load order (home)
 
 `site.js` → `theme.js` → `hero-spheres.js` (all `defer` on `index.html`).
+
+## Responsive behavior (what was added)
+
+- **Viewport** — `viewport-fit=cover` on `index.html` and `inner/Resume.html` so `env(safe-area-inset-*)` works on notched phones.
+- **Hero** — `min-height: 100dvh` (with `100vh` fallback) for stable height when mobile browser chrome shows/hides; **container queries** on `.hero` control when the name stays on one line (with a **fallback** `@media` if container queries are unsupported).
+- **Top nav** — Padding respects **safe areas**; below **560px** width the two nav rows **stack**; **`(pointer: coarse)`** increases tap targets (~44px) for Portfolio / Information / links.
+- **Drawers** — Width uses **`100svw`** where supported to avoid **`100vw` + scrollbar** overflow; **coarse pointer** users get larger **Back / Close** controls.
+- **Theme toggle** — Position uses **`max(..., env(safe-area-inset-*))`** so it clears the iPhone home indicator and side safe areas.
+- **Project images** — **`loading="lazy"`**, **`decoding="async"`**, and **`sizes`** for layout hints (single asset URLs unchanged until you add `srcset`).
+- **Hero canvas** — **`prefers-reduced-data: reduce`** matches **`prefers-reduced-motion`**: one static draw, no animation loop; also forces **budget** graphics path.
+
+Fonts already use Google Fonts with **`display=swap`**.

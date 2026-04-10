@@ -24,27 +24,10 @@
   /* Hero copy: subtle tilt toward viewer */
   --hero-text-perspective: 1200px;
   --hero-text-rotate-x: 3.25deg;
-  /* Hero: lifted type — stacked rim + contact + deep drop + ambient (strong) */
-  --hero-name-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.18),
-    0 2px 0 rgba(0, 0, 0, 0.32),
-    0 3px 2px rgba(0, 0, 0, 0.28),
-    0 8px 20px rgba(0, 0, 0, 0.52),
-    0 16px 44px rgba(0, 0, 0, 0.42),
-    0 28px 72px rgba(0, 0, 0, 0.28),
-    0 0 88px rgba(210, 208, 246, 0.26),
-    0 0 160px rgba(180, 160, 220, 0.12);
-  --hero-line-primary-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.12),
-    0 2px 0 rgba(0, 0, 0, 0.28),
-    0 4px 10px rgba(0, 0, 0, 0.52),
-    0 10px 28px rgba(0, 0, 0, 0.4),
-    0 20px 48px rgba(0, 0, 0, 0.26);
-  --hero-line-secondary-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06),
-    0 2px 2px rgba(0, 0, 0, 0.48),
-    0 5px 16px rgba(0, 0, 0, 0.38),
-    0 12px 36px rgba(0, 0, 0, 0.26);
+  /* Hero type: no text-shadow (avoids any soft halo / “ghost” behind glyphs) */
+  --hero-name-shadow: none;
+  --hero-line-primary-shadow: none;
+  --hero-line-secondary-shadow: none;
 }
 
 html[data-theme="light"] {
@@ -60,28 +43,13 @@ html[data-theme="light"] {
   --drawer-scrim-blur: 5px;
   --drawer-toolbar-divider: rgba(3, 22, 40, 0.12);
   color-scheme: light;
-  /* Depth without white rims (they read as a harsh outline on blue-on-Geyser) */
-  --hero-name-shadow:
-    0 2px 4px rgba(3, 22, 40, 0.07),
-    0 4px 16px rgba(3, 22, 40, 0.13),
-    0 10px 34px rgba(3, 22, 40, 0.12),
-    0 22px 56px rgba(3, 22, 40, 0.09),
-    0 0 68px rgba(79, 134, 198, 0.26),
-    0 0 115px rgba(79, 134, 198, 0.11);
-  --hero-line-primary-shadow:
-    0 2px 6px rgba(3, 22, 40, 0.1),
-    0 6px 20px rgba(3, 22, 40, 0.12),
-    0 16px 42px rgba(3, 22, 40, 0.09);
-  --hero-line-secondary-shadow:
-    0 2px 5px rgba(3, 22, 40, 0.09),
-    0 8px 20px rgba(3, 22, 40, 0.09),
-    0 16px 38px rgba(3, 22, 40, 0.06);
+  --hero-name-shadow: none;
+  --hero-line-primary-shadow: none;
+  --hero-line-secondary-shadow: none;
 }
 
 html[data-theme="light"] body.page-home {
-  background:
-    radial-gradient(ellipse 95% 60% at 50% -8%, rgba(79, 134, 198, 0.1), transparent 58%),
-    var(--color-bg);
+  background: var(--color-bg);
 }
 
 *,
@@ -92,6 +60,8 @@ html[data-theme="light"] body.page-home {
 
 html {
   scroll-behavior: smooth;
+  /* Avoid rare horizontal scroll from 100vw / overflow; content uses max-width patterns */
+  overflow-x: clip;
 }
 
 body {
@@ -132,12 +102,12 @@ img {
 }
 
 .skip-link:focus {
-  top: 16px;
+  top: max(16px, env(safe-area-inset-top));
   outline: 2px solid var(--color-link);
   outline-offset: 3px;
 }
 
-/* Top navigation */
+/* Top navigation — safe-area insets for notched devices */
 .top-nav {
   position: fixed;
   top: 0;
@@ -147,7 +117,12 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 48px);
+  flex-wrap: wrap;
+  row-gap: 10px;
+  padding-top: max(clamp(16px, 3vw, 28px), env(safe-area-inset-top));
+  padding-bottom: clamp(12px, 2vw, 20px);
+  padding-left: max(clamp(16px, 4vw, 48px), env(safe-area-inset-left));
+  padding-right: max(clamp(16px, 4vw, 48px), env(safe-area-inset-right));
   pointer-events: none;
 }
 
@@ -155,12 +130,39 @@ img {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: clamp(12px, 3vw, 28px);
   pointer-events: auto;
 }
 
 .top-nav__cluster--end {
   justify-content: flex-end;
+}
+
+/* Narrow screens: stack sections / links; easier thumb reach */
+@media (max-width: 560px) {
+  .top-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-nav__cluster,
+  .top-nav__cluster--end {
+    justify-content: center;
+  }
+}
+
+/* ~44px minimum touch targets on coarse pointers (WCAG-aligned) */
+@media (pointer: coarse) {
+  .top-nav .text-btn,
+  .top-nav .text-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.35rem 0.5rem;
+    margin: -0.35rem -0.25rem;
+  }
 }
 
 .text-btn {
@@ -216,19 +218,28 @@ body.drawer-active--information #btn-information.text-btn {
   letter-spacing: 0.03em;
 }
 
-/* Hero */
+/* Hero — overflow visible so long type never clips; canvas is clipped inside .hero__bg */
 .hero {
   position: relative;
   isolation: isolate;
+  container-type: inline-size;
+  container-name: hero;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(100px, 18vh, 160px) clamp(24px, 6vw, 48px) clamp(48px, 10vh, 96px);
+  padding:
+    clamp(100px, 18vh, 160px)
+    clamp(12px, 5vw, 48px)
+    clamp(48px, 10vh, 96px);
+  padding-left: max(clamp(12px, 5vw, 48px), env(safe-area-inset-left));
+  padding-right: max(clamp(12px, 5vw, 48px), env(safe-area-inset-right));
   gap: clamp(1.25rem, 4vh, 2.5rem);
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .hero__bg {
@@ -236,6 +247,7 @@ body.drawer-active--information #btn-information.text-btn {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .hero__spheres-canvas {
@@ -260,29 +272,53 @@ body.drawer-active--information #btn-information.text-btn {
   transform-origin: center 40%;
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  /* Flex/grid children default to min-width: auto — allow shrinking to viewport */
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .hero__name {
   margin: 0;
   font-family: var(--font-gothic);
-  font-size: clamp(2.5rem, 8vw + 1rem, 5rem);
+  /* Strong floor on tiny / narrow screens; caps with vw + vmin for short viewports */
+  font-size: clamp(1.125rem, min(5.5vw + 0.65rem, 11vmin + 0.5rem), 5rem);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: 0.035em;
+  line-height: 1.08;
+  letter-spacing: clamp(0.006em, 0.35vw + 0.004em, 0.035em);
   max-width: 100%;
+  width: 100%;
+  padding-inline: 0.125rem;
+  box-sizing: border-box;
   color: var(--color-text);
   text-shadow: var(--hero-name-shadow);
+  text-wrap: balance;
 }
 
 .hero__name-line {
   display: block;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: manual;
 }
 
-/* Only allow wrapping on very narrow viewports where a single line would clip */
-@media (max-width: 320px) {
+/* Single line when viewport and hero column are wide enough */
+@container hero (min-width: 960px) {
   .hero__name-line {
-    white-space: normal;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+}
+
+/* Fallback: browsers without container queries */
+@supports not (container-type: inline-size) {
+  @media (min-width: 960px) {
+    .hero__name-line {
+      white-space: nowrap;
+      overflow-wrap: normal;
+    }
   }
 }
 
@@ -380,7 +416,9 @@ html[data-theme="light"] body.drawer-active .backdrop {
   top: 50%;
   bottom: auto;
   z-index: 200;
+  /* svw avoids scrollbar gutter issues vs 100vw on some browsers */
   width: min(560px, calc(100vw - 2 * var(--drawer-dock-inset)));
+  width: min(560px, calc(100svw - 2 * var(--drawer-dock-inset)));
   height: fit-content;
   max-height: var(--drawer-max-height);
   min-height: 0;
@@ -433,6 +471,17 @@ html[data-theme="light"] body.drawer-active .backdrop {
 
 .drawer__close {
   flex-shrink: 0;
+}
+
+@media (pointer: coarse) {
+  .drawer__toolbar .text-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 14px;
+  }
 }
 
 .drawer__body {
@@ -651,11 +700,11 @@ html[data-theme="light"] .project-card__thumb--github img {
   margin-right: auto;
 }
 
-/* Theme toggle (fixed) */
+/* Theme toggle (fixed) — clear home indicator / notches */
 .theme-toggle-cluster {
   position: fixed;
-  bottom: 22px;
-  right: 22px;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  right: max(22px, env(safe-area-inset-right));
   z-index: 10050;
   display: flex;
   flex-direction: column;
