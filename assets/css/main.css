@@ -24,25 +24,10 @@
   /* Hero copy: subtle tilt toward viewer */
   --hero-text-perspective: 1200px;
   --hero-text-rotate-x: 3.25deg;
-  /* Hero name: depth only — no zero-offset glow (avoids radial “ghost” behind type) */
-  --hero-name-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.18),
-    0 2px 0 rgba(0, 0, 0, 0.32),
-    0 3px 2px rgba(0, 0, 0, 0.28),
-    0 8px 20px rgba(0, 0, 0, 0.52),
-    0 16px 44px rgba(0, 0, 0, 0.42),
-    0 28px 72px rgba(0, 0, 0, 0.28);
-  --hero-line-primary-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.12),
-    0 2px 0 rgba(0, 0, 0, 0.28),
-    0 4px 10px rgba(0, 0, 0, 0.52),
-    0 10px 28px rgba(0, 0, 0, 0.4),
-    0 20px 48px rgba(0, 0, 0, 0.26);
-  --hero-line-secondary-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06),
-    0 2px 2px rgba(0, 0, 0, 0.48),
-    0 5px 16px rgba(0, 0, 0, 0.38),
-    0 12px 36px rgba(0, 0, 0, 0.26);
+  /* Hero type: no text-shadow (avoids any soft halo / “ghost” behind glyphs) */
+  --hero-name-shadow: none;
+  --hero-line-primary-shadow: none;
+  --hero-line-secondary-shadow: none;
 }
 
 html[data-theme="light"] {
@@ -58,20 +43,9 @@ html[data-theme="light"] {
   --drawer-scrim-blur: 5px;
   --drawer-toolbar-divider: rgba(3, 22, 40, 0.12);
   color-scheme: light;
-  /* Depth without white rims; no radial glow behind the name */
-  --hero-name-shadow:
-    0 2px 4px rgba(3, 22, 40, 0.07),
-    0 4px 16px rgba(3, 22, 40, 0.13),
-    0 10px 34px rgba(3, 22, 40, 0.12),
-    0 22px 56px rgba(3, 22, 40, 0.09);
-  --hero-line-primary-shadow:
-    0 2px 6px rgba(3, 22, 40, 0.1),
-    0 6px 20px rgba(3, 22, 40, 0.12),
-    0 16px 42px rgba(3, 22, 40, 0.09);
-  --hero-line-secondary-shadow:
-    0 2px 5px rgba(3, 22, 40, 0.09),
-    0 8px 20px rgba(3, 22, 40, 0.09),
-    0 16px 38px rgba(3, 22, 40, 0.06);
+  --hero-name-shadow: none;
+  --hero-line-primary-shadow: none;
+  --hero-line-secondary-shadow: none;
 }
 
 html[data-theme="light"] body.page-home {
