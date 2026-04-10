@@ -12,6 +12,7 @@
  *
  * Performance: tab background → animation stops (visibility). Narrow / coarse-pointer viewports use
  * lower DPR, fewer stars/motes, 4 meshes, no wireframe glow pass, ~30fps cadence.
+ * **`prefers-reduced-data: reduce`** is treated like reduced motion: static frame, no RAF loop.
  */
 (function () {
   var canvas = document.querySelector(".hero__spheres-canvas");
@@ -20,14 +21,21 @@
   var ctx = canvas.getContext("2d");
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reducedMotion = false;
+  var reducedData = false;
 
   try {
     reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   } catch (e) {}
+  try {
+    reducedData = window.matchMedia("(prefers-reduced-data: reduce)").matches;
+  } catch (e) {}
+  /** Static canvas: reduced motion, or save-data / low-bandwidth preference */
+  var heroStatic = reducedMotion || reducedData;
 
   /** Fewer meshes / particles / pixels on phones & tablets — keeps CPU/GPU cool */
   function isBudgetGraphics() {
     try {
+      if (reducedData) return true;
       if (window.matchMedia("(max-width: 640px)").matches) return true;
       if (
         window.matchMedia("(pointer: coarse)").matches &&
@@ -710,7 +718,7 @@
     drawSolidBackdrop(w, h);
 
     var t = (now - t0) / 1000;
-    if (!reducedMotion) {
+    if (!heroStatic) {
       updateShootingStars(w, h, dt);
       drawStars(w, h, t, false);
       updateAndDrawMotes(w, h, dt);
@@ -784,13 +792,13 @@
       }
     }
     draw();
-    if (!reducedMotion) {
+    if (!heroStatic) {
       heroAnimRaf = window.requestAnimationFrame(frame);
     }
   }
 
   function startHeroAnimationLoop() {
-    if (reducedMotion || heroAnimRaf) return;
+    if (heroStatic || heroAnimRaf) return;
     heroAnimRaf = window.requestAnimationFrame(frame);
   }
 
@@ -809,12 +817,12 @@
         window.cancelAnimationFrame(heroAnimRaf);
         heroAnimRaf = 0;
       }
-    } else if (!reducedMotion) {
+    } else if (!heroStatic) {
       startHeroAnimationLoop();
     }
   });
 
-  if (reducedMotion) {
+  if (heroStatic) {
     draw();
   } else {
     startHeroAnimationLoop();
